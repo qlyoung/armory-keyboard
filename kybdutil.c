@@ -105,14 +105,14 @@ static struct key_t keys_special[] = {
 
 int make_hid_report(char *report, char *formatstr, int formatlen)
 {
-	char input;
+    char input;
 
     // starting index in the report; skip first two bytes
     // as the last 6 hold key data
-	int index = 2;
+    int index = 2;
 
     // fill bytes 2-7 with Usage ID's for character data
-	for (int ic = 0; ic < formatlen; ic++) {
+    for (int ic = 0; ic < formatlen; ic++) {
         // get the input character we're working with
         input = formatstr[ic];
         // map the character to lowercase if it can be mapped
@@ -132,44 +132,44 @@ int make_hid_report(char *report, char *formatstr, int formatlen)
             }
         }
         // handle case where character is a digit
-		else if (lower >= '0' && lower <= '9') {
+        else if (lower >= '0' && lower <= '9') {
             // calculate Usage ID with the table above
-			report[index] = keys_num[lower - '0'].c;
-			index++;
-		}
+            report[index] = keys_num[lower - '0'].c;
+            index++;
+        }
         // otherwise handle symbols, modifiers and escaped characters
-		else {
+        else {
             // if the character is \, skip it; the next character should be handled
             // as an escape code that's in our lookup table
-			if (input == '\\') {
-				ic++;
-				input = formatstr[ic];
-			}
+            if (input == '\\') {
+                ic++;
+                input = formatstr[ic];
+            }
             // find the Usage ID of the special in our lookup table
-			for (int i = 0; i < sizeof(keys_special); i++) {
+            for (int i = 0; i < sizeof(keys_special); i++) {
                 // if we found the entry
-				if (input == keys_special[i].k) {
+                if (input == keys_special[i].k) {
                     // set the current report byte to the Usage ID
-					if (keys_special[i].c != 0) {
-						report[index] = keys_special[i].c;
-					}
+                    if (keys_special[i].c != 0) {
+                        report[index] = keys_special[i].c;
+                    }
                     // OR in any modifiers needed to produce the character
-					report[0] |= keys_special[i].mod;
-					index++;
-					break;
-				}
+                    report[0] |= keys_special[i].mod;
+                    index++;
+                    break;
+                }
                 // if we reached the end of the list, break
-				if (keys_special[i].k == 0)
-					break;
-			}
-		}
+                if (keys_special[i].k == 0)
+                    break;
+            }
+        }
         // if the first data byte is unset and the modifier is also unset
         // then this report is not valid and we should return
-		if (report[2] == 0 && report[0] == 0) {
-			printf("error for >%c<\n", input);
-			return 1;
-		}
-	}
+        if (report[2] == 0 && report[0] == 0) {
+            printf("error for >%c<\n", input);
+            return 1;
+        }
+    }
 
-	return 0;
+    return 0;
 }
