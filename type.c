@@ -102,7 +102,7 @@ void parse(FILE* scriptfile, int fd) {
       // build report string size 3
       char *repstr = calloc((size_t) 3, (size_t) 1);
       repstr[0] = '\\';
-      repstr[1] = 'g';
+      repstr[1] = GUI;
       if (c != NULL) {
         repstr[2] = *c;
         make_hid_report(report, repstr, 3);
@@ -120,13 +120,63 @@ void parse(FILE* scriptfile, int fd) {
       continue;
     }
     else if (!strcmp(command, "SHIFT")) {
-
+      char *param = strtok(NULL, " \n");
+      char *repstr = calloc((size_t) 4, (size_t) 1);
+      repstr[0] = '\\';
+      repstr[1] = SHIFT;
+      if (param != NULL) {
+        int len = 4;
+        repstr[2] = '\\';
+        if (!strcmp(param, "DELETE"))
+          repstr[3] = DELETE;
+        else if (!strcmp(param, "HOME"))
+          repstr[3] = HOME;
+        else if (!strcmp(param, "INSERT"))
+          repstr[3] = INSERT;
+        else if (!strcmp(param, "PAGEUP"))
+          repstr[3] = PAGEUP;
+        else if (!strcmp(param, "PAGEDOWN"))
+          repstr[3] = PAGEDOWN;
+        else if (!strcmp(param, "WINDOWS") || !strcmp(param, "GUI"))
+          repstr[3] = GUI;
+        else if (!strcmp(param, "UPARROW"))
+          repstr[3] = UARROW;
+        else if (!strcmp(param, "DOWNARROW"))
+          repstr[3] = DARROW;
+        else if (!strcmp(param, "LEFTARROW"))
+          repstr[3] = LARROW;
+        else if (!strcmp(param, "RIGHTARROW"))
+          repstr[3] = RARROW;
+        else if (!strcmp(param, "TAB"))
+          repstr[3] = TAB;
+        else
+          len = 2;
+        make_hid_report(report, repstr, len);
+      }
+      else
+        make_hid_report(report, repstr, 2);
+      sendreport(report, fd);
+      free(repstr);
       continue;
     }
     else if (!strcmp(command, "ENTER")) {
       // build report
-      make_hid_report(report, "\\n", 2);
+      char *repstr = calloc((size_t) 2, (size_t) 1);
+      repstr[0] = '\\';
+      repstr[1] = ENTER;
+      make_hid_report(report, repstr, 2);
       sendreport(report, fd);
+      free(repstr);
+      continue;
+    }
+    else if (!strcmp(command, "DELETE")) {
+      // build report
+      char *repstr = calloc((size_t) 2, (size_t) 1);
+      repstr[0] = '\\';
+      repstr[1] = DELETE;
+      make_hid_report(report, repstr, 2);
+      sendreport(report, fd);
+      free(repstr);
       continue;
     }
 
