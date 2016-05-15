@@ -124,8 +124,10 @@ void parse(FILE* scriptfile, int fd) {
     if (!strcmp(command, "DELAY")) {
       // read delay
       int delay = 0;
-      if (sscanf(strtok(NULL, " \n"), "%d", &delay) == 0)
+      if (sscanf(strtok(NULL, " \n"), "%d", &delay) == 0) {
         err(ERR_INVALID_TOKEN, false);
+        continue;
+      }
 
       // execute delay
       millisleep(delay);
@@ -145,7 +147,7 @@ void parse(FILE* scriptfile, int fd) {
       }
       continue;
     }
-    // because duckyscript was written by skids
+    // because duckyscript was created by skids
     else if (!strcmp(command, "SIMUL")) {
       // parse up to six arguments to be sent simultaneously
       char simuls[6];
@@ -157,7 +159,7 @@ void parse(FILE* scriptfile, int fd) {
         param = strtok(NULL, " \n");
         // if there are no more tokens, die
         if (param == NULL) break;
-        // if it's a single char, don't interpret it
+        // if it's a single char, just pass it along
         if (strlen(param) == 1) {
           simuls[i] = *param;
           specials_done = true;
