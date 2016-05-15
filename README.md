@@ -23,11 +23,11 @@ by Inverse Path, but should be easily adaptable to other images.
 
 Setting up HID Keyboard + CDC Ethernet:
 ```
-$ ./hidnet.sh
+# ./hidnet.sh
 ```
 Using the utility:
 ```
-$ ./type <script> [/dev/hidgX]
+# ./type <script> [/dev/hidgX]
 ```
 
 The interpreter will interpret the script and send the generated HID reports to the
@@ -46,7 +46,8 @@ Syntax is identical to DuckyScript, with the following exceptions:
 
 * `CTRL-ALT`, `CTRL-SHIFT`, and other such combined keys have been replaced by a single keyword,
   `SIMUL`. Start a line with `SIMUL` and follow it with up to 6 tokens or plaintext characters
-  and all 6 will be sent in one HID report, as if they were pressed at the same time.
+  and all 6 will be sent in one HID report, as if they were pressed at the same time. Note: all
+  escape tokens (SHIFT, CONTROL, SPACE, etc) must occur before any plaintext characters.
 
 Example:
 
@@ -57,7 +58,7 @@ ArmoryDuckyScript: `SIMUL CTRL ALT DELETE`
 This seems more verbose at first, but it's actually better, because you can do things with
 it that you can't really do in DuckyScript, such as:
 
-`SIMUL CTRL ALT ENTER a SPACE MENU`
+`SIMUL CTRL ALT ENTER SPACE MENU a `
 
 I have no idea why you would want to do this, but HID supports sending up to 6 keys per
 report, so I pass that option along to the user. Obviously it is up to you to send sane
@@ -89,6 +90,8 @@ STRING memes.txt
 ENTER
 ```
 etc.
+
+A full example is available in `test.txt`
 
 See the DuckyScript wiki for further info.
 

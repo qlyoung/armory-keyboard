@@ -109,11 +109,11 @@ static struct key_t keys_escape[] = {
 int make_hid_report(char *report, int numescape, int argc, ...) {
   // sanity checks
   if (argc < 1) {
-    fprintf(stderr, "Insane character count: %d\n", argc);
+    fprintf(stderr, "[!] Insane character count: %d\n", argc);
     return -1;
   }
   if (numescape < 0) {
-    fprintf(stderr, "Insane escape count: %d\n", numescape);
+    fprintf(stderr, "[!] Insane escape count: %d\n", numescape);
     return -1;
   }
 
@@ -137,7 +137,7 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
           break;
         }
         if (keys_escape[i].k == 0) {
-          fprintf(stderr, "Unknown escape character: %c\n", input);
+          fprintf(stderr, "[!] Unknown escape character: %c\n", input);
           return -1;
         }
       }
@@ -171,7 +171,7 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
     // if the first data byte is unset and the modifier is also unset
     // then this report is not valid and we should return
     if (report[2] == 0 && report[0] == 0) {
-      fprintf(stderr, "Unknown character: >%c<\n", input);
+      fprintf(stderr, "[!] No keycode mapping: >%c<\n", input);
       return -1;
     }
 
@@ -184,11 +184,11 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
 int make_hid_report_arr(char *report, int numescape, int argc, char* chars) {
   // sanity checks
   if (argc < 1) {
-    fprintf(stderr, "Insane character count (%d)\n", argc);
+    fprintf(stderr, "[!] Insane character count (%d)\n", argc);
     return -1;
   }
   if (numescape < 0) {
-    fprintf(stderr, "Insane escape count (%d)\n", numescape);
+    fprintf(stderr, "[!] Insane escape count (%d)\n", numescape);
     return -1;
   }
 

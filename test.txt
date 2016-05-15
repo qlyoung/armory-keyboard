@@ -1,0 +1,66 @@
+DEFAULT_DELAY 500
+REM delay 500 ms after each command
+REM Lines beginning with REM are skipped
+# hash style comments are also supported
+
+
+# blank lines are ignored
+
+
+# open leafpad with dmenu
+SIMUL GUI d
+STRING leafpad
+ENTER
+
+# try some strings
+STRING 'Ayy Lmao' is my favorite meme, aliens are funny!
+ENTER
+STRING abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+ENTER
+STRING 1234567890!@#$%^&*()_-+={}[];:'"<,.>/?\| ~`
+
+# delay 1.5 seconds
+DELAY 1000
+
+# in case you want to print a single space
+SPACE
+
+# try control characters
+HOME
+STRING wat-->
+END
+STRING <--wat
+LEFTARROW
+LEFTARROW
+RIGHTARROW
+RIGHTARROW
+SIMUL CTRL a
+SIMUL CONTROL c
+DOWNARROW
+ENTER
+SIMUL SHIFT INSERT
+UPARROW
+
+# delete first occurrence of 'Ayy'
+SIMUL ALT s
+ENTER
+STRING Ayy
+ENTER
+DELETE
+
+# pageup, pagedown
+PAGEUP
+STRING alpha
+ENTER
+PAGEDOWN
+ENTER
+STRING omega
+
+# garbage lines are ignored
+
+;jsa;lkjfdsadsa;lkdsalkjfds
+
+HURURURUR DURRR
+SIMUL MEMES hahahaha
+
+STRING

@@ -13,7 +13,7 @@
 
 /** Displays error message and exit()'s if fatal is true */
 void err(char *message, bool fatal) {
-  printf("%s\n", message);
+  fprintf(stderr, "[!] %s\n", message);
   if (fatal)
     exit(1);
 }
@@ -67,6 +67,8 @@ char map_escape(char* token) {
     return INSERT;
   else if (!strcmp(token, "MENU"))
     return MENU;
+  else if (!strcmp(token, "MENU"))
+    return MENU;
   else if (!strcmp(token, "ENTER"))
     return ENTER;
   else if (!strcmp(token, "SHIFT"))
@@ -109,14 +111,13 @@ void parse(FILE* scriptfile, int fd) {
 
   // loop over line
   while (fgets(line, sizeof(line), scriptfile)) {
-    // echo script line
-    printf("%s", line);
+    // echo script line if it's not empty
+    if (strlen(line) > 1)
+      printf("%s", line);
     // get command
     char* command = strtok(line, " \n");
     // if the line is blank or a comment, skip it
-    if (command == NULL || strcmp(command, "REM") == 0) continue;
-    // sleep for default delay
-    millisleep(defdelay);
+    if (command == NULL || !strcmp(command, "REM") || !strcmp(command, "#")) continue;
     // clear HID report
     memset(report, 0x0, sizeof(report));
 
@@ -131,29 +132,29 @@ void parse(FILE* scriptfile, int fd) {
 
       // execute delay
       millisleep(delay);
-      continue;
     }
     else if (!strcmp(command, "STRING")) {
       // read string param
       char *str = strtok(NULL, "\n");
       // if no string, err
-      if (str == NULL)
+      if (str == NULL) {
         err(ERR_INVALID_TOKEN, false);
+        continue;
+      }
       // send each character one by one
       for (int i = 0; i < strlen(str); i++) {
         // convert character to HID report
         make_hid_report(report, 0, 1, str[i]);
         sendreport(report, fd);
       }
-      continue;
     }
     // because duckyscript was created by skids
     else if (!strcmp(command, "SIMUL")) {
       // parse up to six arguments to be sent simultaneously
       char simuls[6];
       char *param = NULL;
-      bool specials_done = false;
-      int i = 0, num_specials = 0;
+      bool escapes_done = false, invalid = false;
+      int i = 0, num_escapes = 0;
       for (; i < sizeof(simuls); i++) {
         // get next space or newline-delimited argument
         param = strtok(NULL, " \n");
@@ -162,29 +163,33 @@ void parse(FILE* scriptfile, int fd) {
         // if it's a single char, just pass it along
         if (strlen(param) == 1) {
           simuls[i] = *param;
-          specials_done = true;
+          escapes_done = true;
         }
         else {
-          // if specials are already done, error
-          if (specials_done) {
-            err(ERR_INVALID_TOKEN, false);
-            continue;
+          // if escapes are already done, error
+          if (escapes_done) {
+            invalid = true;
+            break;
           };
           // try to map it as a syntax element
           char esc = map_escape(param);
           if (esc == 0) {
-            err(ERR_INVALID_TOKEN, false);
-            continue;
+            invalid = true;
+            break;
           }
           // write special
           simuls[i] = esc;
-          num_specials++;
+          num_escapes++;
         }
       }
+      // if broke loop because of error, skip line
+      if (invalid) {
+        err(ERR_INVALID_TOKEN, false);
+        continue;
+      }
       // generate report
-      make_hid_report_arr(report, num_specials, i, simuls);
+      make_hid_report_arr(report, num_escapes, i, simuls);
       sendreport(report, fd);
-      continue;
     }
     // if it wasn't anything else, try to map token to an escape
     else {
@@ -196,12 +201,12 @@ void parse(FILE* scriptfile, int fd) {
       }
       make_hid_report(report, 1, 1, esc);
       sendreport(report, fd);
-      continue;
     }
+
+    // sleep for default delay
+    millisleep(defdelay);
   }
 }
-
-int dev_fd = -1;
 
 int main(int argc, char** argv) {
   // sanity check on argument count
@@ -218,6 +223,7 @@ int main(int argc, char** argv) {
       dev_filename = argv[2];
 
   // attempt to open device file
+  int dev_fd;
   if ((dev_fd = open(dev_filename, O_RDWR, 0666)) == -1) {
       perror(dev_filename);
       return 3;
