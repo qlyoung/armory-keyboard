@@ -17,10 +17,15 @@ You must build on the USBArmory or cross-compile.
 Usage
 -----
 First, setup your USBArmory to emulate a USB HID keyboard, either manually through
-ConfigFS or with the provided shell script ```hidnet.sh```. The script expects to
-be running on the Debian Jessie base image provided by Inverse Path, but should be
-easily adaptable to other images.
+ConfigFS or by exeuting the provided shell script ```hidnet.sh``` (written by Collin
+Mulliner). The script expects to be running on the Debian Jessie base image provided
+by Inverse Path, but should be easily adaptable to other images.
 
+Setting up HID Keyboard + CDC Ethernet:
+```
+$ ./hidnet.sh
+```
+Using the utility:
 ```
 $ ./type <script> [/dev/hidgX]
 ```
