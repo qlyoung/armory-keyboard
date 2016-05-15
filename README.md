@@ -49,7 +49,7 @@ Syntax is identical to DuckyScript, with the following exceptions:
 * `CTRL-ALT`, `CTRL-SHIFT`, and other such combined keys have been replaced by a single keyword,
   `SIMUL`. Start a line with `SIMUL` and follow it with up to 6 tokens or plaintext characters
   and all 6 will be sent in one HID report, as if they were pressed at the same time. Note: all
-  escape tokens (SHIFT, CONTROL, SPACE, etc) must occur before any plaintext characters.
+  escape tokens (`SHIFT`, `CONTROL`, `SPACE`, etc) must occur before any plaintext characters.
 
 Example:
 
@@ -69,6 +69,8 @@ combinations, and up to the operating system to interpret them.
 * I haven't finished implementing all the keycodes yet. Currently unimplemented are:
  * `REP`, to repeat commands
  * `F1` - `F12`
+
+* Lines may be at most 500 characters. Excess characters will be ignored.
 
 Beyond that, everything else works as expected:
 

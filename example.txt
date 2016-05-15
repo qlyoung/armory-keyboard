@@ -1,9 +1,8 @@
-DEFAULT_DELAY 20
-REM set default delay after commands to 20 milliseconds
-REM lines beginning with REM are ignored
-# lines beginning with an octothorpe are also ignored
+REM lines beginning with REM are ignored, as are
+# lines beginning with an octothorpe and empty lines
 
-# blank lines are ignored too
+# set default delay after each command to 20ms
+DEFAULT_DELAY 20
 
 # open a new pane in tmux
 SIMUL CTRL b

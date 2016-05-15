@@ -11,14 +11,21 @@
 #define ERR_INVALID_TOKEN "Invalid token, skipping line."
 #define ERR_INVALID_HIDDEV "Bad HID device."
 
-/** Displays error message and exits if fatal is true */
+/**
+ * Displays error message and exits if fatal is true.
+ * @param message null-terminated error message
+ * @param fatal whether this error should kill the program
+ */
 void err(char *message, bool fatal) {
   fprintf(stderr, "[!] %s\n", message);
   if (fatal)
     exit(1);
 }
 
-/** Sleeps for the specified number of milliseconds */
+/**
+ * Sleeps for the specified number of milliseconds.
+ * @param milliseconds
+ */
 void millisleep(long milliseconds) {
   // convert millis to seconds and nanos
   long seconds = (long) (milliseconds / 1000L);
@@ -27,7 +34,11 @@ void millisleep(long milliseconds) {
   nanosleep(&ts, NULL);
 }
 
-/** Sends the HID report to the specified character device */
+/**
+ * Sends the HID report to the specified character device.
+ * @param report the 8-byte HID report
+ * @param device file descript of HID character device (/dev/hidgX)
+ */
 void sendreport(char* report, int device) {
   // send key
   if (write(device, report, sizeof(report)) != sizeof(report))
@@ -37,9 +48,6 @@ void sendreport(char* report, int device) {
   if (write(device, report, sizeof(report)) != sizeof(report))
     err(ERR_INVALID_HIDDEV, true);
 }
-
-/* State variables for parser */
-long defdelay = 0;
 
 /* maps DuckyScript special keywords to their char values */
 char map_escape(char* token) {
@@ -105,6 +113,8 @@ char map_escape(char* token) {
     return 0;
 }
 
+/* State variables for parser */
+long defdelay = 0;
 
 /**
  * Parses and executes an ArmoryDuckyScript.
@@ -113,11 +123,20 @@ char map_escape(char* token) {
  */
 void parse(FILE* scriptfile, int fd) {
   char report[8];
-  char line[500];
+  char line[501];
+  char *command;
+
+  // skip any comments at the beginning of the script
+  do {
+    fgets(line, sizeof(line), scriptfile);
+    // echo script line if it's not empty
+    if (strlen(line) > 1)
+      printf("%s", line);
+    // get first token
+    command = strtok(line, " \n");
+  } while (command == NULL || !strcmp(command, "#") || !strcmp(command, "REM"));
 
   // check for default delay setting
-  fgets(line, sizeof(line), scriptfile);
-  char *command = strtok(line, " ");
   if (!strcmp(command, "DEFAULT_DELAY") || !strcmp(command, "DEFAULTDELAY")) {
     if (sscanf(strtok(NULL, " "), "%ld", &defdelay) == 0)
       err(ERR_INVALID_TOKEN, false);
@@ -145,7 +164,6 @@ void parse(FILE* scriptfile, int fd) {
         err(ERR_INVALID_TOKEN, false);
         continue;
       }
-
       // execute delay
       millisleep(delay);
     }
@@ -227,7 +245,7 @@ void parse(FILE* scriptfile, int fd) {
 int main(int argc, char** argv) {
   // sanity check on argument count
   if (argc < 2) {
-    printf("usage: %s <file> [/dev/hidgX]\n", argv[0]);
+    printf("usage: %s <script> [/dev/hidgX]\n", argv[0]);
     return 0;
   }
 
