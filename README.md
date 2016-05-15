@@ -8,9 +8,7 @@ Building
 --------
 ```shell
 $ git clone https://github.com/qlyoung/armory-keyboard.git
-
 $ cd armory-keyboard
-
 $ make
 ```
 
@@ -21,13 +19,13 @@ Usage
 First, setup your USBArmory to emulate a USB HID keyboard, either manually through
 ConfigFS or with the provided shell script ```hidnet.sh```.
 
-```shell
+```
 $ ./type <script> [/dev/hidgX]
 ```
 
 The interpreter will interpret the script and send the generated HID reports to the
-specified HID character device, /dev/hidgX. If no device is speficied, the default is
-/dev/hidg0.
+specified HID character device, `/dev/hidgX`. If no device is speficied, the default is
+`/dev/hidg0`.
 
 Scripts
 -------
@@ -42,20 +40,17 @@ Syntax is identical to DuckyScript, with the following exceptions:
 * CTRL-ALT, CTRL-SHIFT, and other such combined keys have been replaced by a single keyword,
   SIMUL. Start a line with SIMUL and follow it with up to 6 tokens or plaintext characters
   and all 6 will be sent in one HID report, as if they were pressed at the same time.
-  Example:
 
-DuckyScript:
+Example:
 
-`CTRL-ALT DELETE`
+DuckyScript: `CTRL-ALT DELETE`
 
-ArmoryDuckyScript:
-
-`SIMUL CTRL ALT DELETE`
+ArmoryDuckyScript: `SIMUL CTRL ALT DELETE`
 
 This seems more verbose at first, but it's actually better, because you can do things with
 it that you can't really do in DuckyScript, such as:
 
-`SIMUL CTRL ALT SHIFT SPACE r d MENU`
+`SIMUL CTRL ALT ENTER a SPACE MENU`
 
 I have no idea why you would want to do this, but HID supports sending up to 6 keys per
 report, so I pass that option along to the user. Obviously it is up to you to send sane
@@ -86,6 +81,7 @@ SIMUL CTRL S
 STRING memes.txt
 ENTER
 ```
+etc.
 
 See the DuckyScript wiki for further info.
 
