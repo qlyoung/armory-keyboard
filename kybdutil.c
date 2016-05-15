@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "kybdutil.h"
 
 /**
@@ -45,7 +46,7 @@ static struct key_t keys_num[] = {
  * Table of key_t for non-alphanumeric keys and
  * escape codes
  */
-static struct key_t keys_special[] = {
+static struct key_t keys_symbol[] = {
     {.k = '!', .c = 0x1e, .mod=0x20},
     {.k = '@', .c = 0x1f, .mod=0x20},
     {.k = '#', .c = 0x20, .mod=0x20},
@@ -79,6 +80,9 @@ static struct key_t keys_special[] = {
     {.k = '`', .c = 0x35, .mod=0x00},
     {.k = '~', .c = 0x35, .mod=0x20},
     {.k = ' ', .c = 0x2c, .mod=0x00},
+    {.k = 0x0, .c = 0x00, .mod=0x00}
+};
+static struct key_t keys_escape[] = {
     // escape codes
     {.k = ALT,      .c = 0x00, .mod=0x04}, // alt
     {.k = BACKSPACE,.c = 0x2A, .mod=0x00}, // backspace
@@ -99,77 +103,120 @@ static struct key_t keys_special[] = {
     {.k = DARROW,   .c = 0x51, .mod=0x00}, // down arrow
     {.k = PAGEUP,   .c = 0x4B, .mod=0x00}, // page up
     {.k = PAGEDOWN, .c = 0x4E, .mod=0x00}, // page down
+    {.k = SPACE,    .c = 0x2C, .mod=0x00}, // space (helps with parsing)
     {.k = 0x0, .c = 0x00, .mod=0x00}
 };
 
 
-int make_hid_report(char *report, char *formatstr, int formatlen)
+int make_hid_report(char *report, int numescape, int argc, ...)
 {
-    char input;
+    // vargs list
+    va_list chars;
+    va_start(chars, argc);
 
     // starting index in the report; skip first two bytes
     // as the last 6 hold key data
     int index = 2;
 
-    // fill bytes 2-7 with Usage ID's for character data
-    for (int ic = 0; ic < formatlen; ic++) {
-        // get the input character we're working with
-        input = formatstr[ic];
-        // map the character to lowercase if it can be mapped
-        char lower = tolower(input);
 
-        // handle case where character is a letter
-        if (lower >= 'a' && lower <= 'z') {
-            // calculate Usage ID; ASCII lowercase letters map directly
-            // to their Usage ID's by subtracting 93.
-            // See Usage Page 0x07 for this conversion
-            report[index] = lower - ('a' - 4);
-            index++;
-            // if the character is a capital letter, set bits 1 and 5 of byte 0
-            // (modifier byte) to indicate left and right shift keys
-            if (lower != input) {
-                report[0] = 0x22;
-            }
-        }
-        // handle case where character is a digit
-        else if (lower >= '0' && lower <= '9') {
-            // calculate Usage ID with the table above
-            report[index] = keys_num[lower - '0'].c;
-            index++;
-        }
-        // otherwise handle symbols, modifiers and escaped characters
-        else {
-            // if the character is \, skip it; the next character should be handled
-            // as an escape code that's in our lookup table
-            if (input == '\\') {
-                ic++;
-                input = formatstr[ic];
-            }
-            // find the Usage ID of the special in our lookup table
-            for (int i = 0; i < sizeof(keys_special); i++) {
-                // if we found the entry
-                if (input == keys_special[i].k) {
+    // fill bytes 2-7 with Usage ID's for characters we were passed
+    // if we were passed more than 6 chars, just process the first 6
+    argc = argc > 6 ? 6 : argc;
+    for (int ic = 0; ic < argc; ic++) {
+
+        // get the input character we're working with
+        char input = (char) va_arg(chars, int);
+
+        // if we're still processing escapes,
+        if (ic < numescape) {
+            // search for the escape in our lookup table
+            for (int i = 0; i < sizeof(keys_escape); i++) {
+                if (input == keys_escape[i].k) {
                     // set the current report byte to the Usage ID
-                    if (keys_special[i].c != 0) {
-                        report[index] = keys_special[i].c;
+                    if (keys_escape[i].c != 0) {
+                        report[index] = keys_escape[i].c;
                     }
                     // OR in any modifiers needed to produce the character
-                    report[0] |= keys_special[i].mod;
+                    report[0] |= keys_escape[i].mod;
                     index++;
                     break;
                 }
                 // if we reached the end of the list, break
-                if (keys_special[i].k == 0)
+                if (keys_escape[i].k == 0)
                     break;
             }
+
         }
+        else {
+            // handle case where character is a letter
+            if (isalpha(input)) {
+                // calculate Usage ID; ASCII lowercase letters map directly
+                // to their Usage ID's by subtracting 93.
+                // See Usage Page 0x07 for this conversion
+                report[index] = tolower(input) - ('a' - 4);
+                index++;
+                // if the character is a capital letter, set bits 1 and 5 of byte 0
+                // (modifier byte) to indicate left and right shift keys
+                if (isupper(input)) {
+                    report[0] = 0x22;
+                }
+            }
+            // handle case where character is a digit
+            else if (isdigit(input)) {
+                // calculate Usage ID with the table above
+                report[index] = keys_num[input - '0'].c;
+                index++;
+            }
+            // if it's printable, assume it's a symbol
+            else if (isprint(input)) {
+                for (int i = 0; i < sizeof(keys_symbol); i++) {
+                    if (input == keys_symbol[i].k) {
+                        // set the current report byte to the Usage ID
+                        if (keys_symbol[i].c != 0) {
+                            report[index] = keys_symbol[i].c;
+                        }
+                        // OR in any modifiers needed to produce the character
+                        report[index] |= keys_symbol[i].mod;
+                        index++;
+                        break;
+                    }
+                    // if we reached the end of the list, break
+                    if (keys_symbol[i].k == 0)
+                        break;
+                }
+            }
+        }
+
         // if the first data byte is unset and the modifier is also unset
         // then this report is not valid and we should return
         if (report[2] == 0 && report[0] == 0) {
             printf("error for >%c<\n", input);
             return 1;
         }
+
     }
 
     return 0;
 }
+
+int make_hid_report_arr(char *report, int numspec, int argc, char* chars) {
+  // i'm so sorry
+  switch (argc) {
+    case 1:
+      return make_hid_report(report, numspec, argc, chars[0]);
+    case 2:
+      return make_hid_report(report, numspec, argc, chars[0], chars[1]);
+    case 3:
+      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2]);
+    case 4:
+      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3]);
+    case 5:
+      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3],
+                             chars[4]);
+    case 6:
+      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3],
+                             chars[4], chars[5]);
+  }
+  return 1;
+}
+

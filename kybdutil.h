@@ -22,5 +22,7 @@
 #define DARROW      'j'
 #define PAGEUP      'z'
 #define PAGEDOWN    'x'
+#define SPACE       'p'
 
-int make_hid_report(char *report, char *formatstr, int formatlen);
+int make_hid_report(char *, int, int, ...);
+int make_hid_report_arr(char *, int, int, char *);
