@@ -6,8 +6,8 @@
  *  Collin Mulliner (collin AT mulliner.org)
  */
 
-#include <stdio.h>
 #include <ctype.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include "kybdutil.h"
@@ -15,12 +15,14 @@
 /**
  * Keycode struct. Holds a character, its HID Usage ID, and
  * a bit field that indicates what bits of the modifier byte
- * must be pressed to produce it.
+ * must be set to produce it.
+ *
+ * Used to map characters to their keycodes.
  */
 struct key_t {
   // literal character or escape code
   char k;
-  // HID keycode for the character
+  // HID Usage ID / keycode for the character
   char c;
   // modifier bitfield for this character
   char mod;
@@ -101,97 +103,76 @@ static struct key_t keys_escape[] = {
   {.k = PAGEUP,   .c = 0x4B, .mod=0x00}, // page up
   {.k = PAGEDOWN, .c = 0x4E, .mod=0x00}, // page down
   {.k = SPACE,    .c = 0x2C, .mod=0x00}, // space (helps with parsing)
-  {.k = 0x0, .c = 0x00, .mod=0x00}
+  {.k = 0x0,      .c = 0x00, .mod=0x00}
 };
 
-int make_hid_report(char *report, int numescape, int argc, ...)
-{
+int make_hid_report(char *report, int numescape, int argc, ...) {
+  // sanity checks
   if (argc < 1) {
-    printf("Specify at least one character\n");
-    return 1;
+    fprintf(stderr, "Insane character count: %d\n", argc);
+    return -1;
   }
   if (numescape < 0) {
-    printf("Insane escape count\n");
-    return 1;
+    fprintf(stderr, "Insane escape count: %d\n", numescape);
+    return -1;
   }
-  // vargs list
+
   va_list chars;
   va_start(chars, argc);
 
-  // index into the report; last 6 bytes hold key data
   int index = 2;
 
-  // fill bytes 2-7 with Usage ID's for characters we were passed
   argc = argc > 6 ? 6 : argc;
   for (int ic = 0; ic < argc; ic++) {
-
-    // get the input character we're working with
     char input = (char) va_arg(chars, int);
 
-    // if we're still processing escapes,
+    // if processing escapes, search for character in escape table
     if (ic < numescape) {
-      // search for the escape in our lookup table
       for (int i = 0; i < sizeof(keys_escape); i++) {
         if (input == keys_escape[i].k) {
-          // set the current report byte to the Usage ID
           if (keys_escape[i].c != 0)
             report[index] = keys_escape[i].c;
-          // OR in any modifiers needed to produce the character
           report[0] |= keys_escape[i].mod;
           index++;
           break;
         }
-        // if we reached the end of the list, break
-        if (keys_escape[i].k == 0)
-          break;
+        if (keys_escape[i].k == 0) {
+          fprintf(stderr, "Unknown escape character: %c\n", input);
+          return -1;
+        }
       }
-
     }
-    else {
-      // handle case where character is a letter
-      if (isalpha(input)) {
-        // calculate Usage ID; ASCII lowercase letters map directly
-        // to their Usage ID's by subtracting 93.
-        // See Usage Page 0x07 for this conversion
-        report[index] = tolower(input) - ('a' - 4);
-        index++;
-        // if the character is a capital letter, set bits 1 and 5 of byte 0
-        // (modifier byte) to indicate left and right shift keys
-        if (isupper(input)) {
-          report[0] = 0x22;
+    else if (isalpha(input)) {
+      // see HID Usage Tables page 0x07 for this conversion
+      report[index] = tolower(input) - ('a' - 4);
+      index++;
+      // if uppercase character, set l+r shift in modifier
+      if (isupper(input))
+        report[0] = 0x22;
+    }
+    else if (isdigit(input)) {
+      report[index] = keys_num[input - '0'].c;
+      index++;
+    }
+    else if (isprint(input)) {
+      for (int i = 0; i < sizeof(keys_symbol); i++) {
+        if (input == keys_symbol[i].k) {
+          if (keys_symbol[i].c != 0)
+            report[index] = keys_symbol[i].c;
+          report[0] |= keys_symbol[i].mod;
+          index++;
+          break;
         }
-      }
-      // handle case where character is a digit
-      else if (isdigit(input)) {
-        // map char to array index by subtracting ASCII 0
-        report[index] = keys_num[input - '0'].c;
-        index++;
-      }
-      // if it's printable, assume it's a symbol
-      else if (isprint(input)) {
-        for (int i = 0; i < sizeof(keys_symbol); i++) {
-          if (input == keys_symbol[i].k) {
-            // set the current report byte to the Usage ID
-            if (keys_symbol[i].c != 0) {
-              report[index] = keys_symbol[i].c;
-            }
-            // OR in any modifiers needed to produce the character
-            report[index] |= keys_symbol[i].mod;
-            index++;
-            break;
-          }
-          // if we reached the end of the list, break
-          if (keys_symbol[i].k == 0)
-            break;
-        }
+        if (keys_symbol[i].k == 0)
+          break;
       }
     }
 
     // if the first data byte is unset and the modifier is also unset
     // then this report is not valid and we should return
     if (report[2] == 0 && report[0] == 0) {
-      printf("error for >%c<\n", input);
-      return 1;
+      fprintf(stderr, "Unknown character: >%c<\n", input);
+      return -1;
     }
 
   }
@@ -201,9 +182,14 @@ int make_hid_report(char *report, int numescape, int argc, ...)
 }
 
 int make_hid_report_arr(char *report, int numspec, int argc, char* chars) {
+  // sanity checks
   if (argc < 1) {
-    printf("Specify at least one character\n");
-    return 1;
+    fprintf(stderr, "Insane character count (%d)\n", argc);
+    return -1;
+  }
+  if (numescape < 0) {
+    fprintf(stderr, "Insane escape count (%d)\n", numescape);
+    return -1;
   }
 
   // i'm so sorry
@@ -217,12 +203,10 @@ int make_hid_report_arr(char *report, int numspec, int argc, char* chars) {
     case 4:
       return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3]);
     case 5:
-      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3],
-                chars[4]);
+      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3], chars[4]);
     case 6:
     default:
-      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3],
-                chars[4], chars[5]);
+      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3], chars[4], chars[5]);
   }
 }
 
