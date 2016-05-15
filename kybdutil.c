@@ -2,9 +2,8 @@
  *  Utility module. Given a format string it generates 8-byte USB HID keyboard
  *  reports suitable to send to the host.
  *
- *  Authors:
- *      Collin Mulliner (collin AT mulliner.org)
- *      Quentin Young (qlyoung AT qlyoung.net
+ *  Author:
+ *      Quentin Young (qlyoung AT qlyoung.net)     
  *
  */
 
