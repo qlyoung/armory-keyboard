@@ -11,7 +11,7 @@
 #define ERR_INVALID_TOKEN "Invalid token, skipping line."
 #define ERR_INVALID_HIDDEV "Bad HID device."
 
-/** Displays error message and exit()'s if fatal is true */
+/** Displays error message and exits if fatal is true */
 void err(char *message, bool fatal) {
   fprintf(stderr, "[!] %s\n", message);
   if (fatal)
@@ -38,10 +38,10 @@ void sendreport(char* report, int device) {
     err(ERR_INVALID_HIDDEV, true);
 }
 
-// State variables for parser
+/* State variables for parser */
 long defdelay = 0;
 
-// maps DuckyScript special keywords to their char values
+/* maps DuckyScript special keywords to their char values */
 char map_escape(char* token) {
   if (!strcmp(token, "ALT"))
     return ALT;
@@ -65,36 +65,52 @@ char map_escape(char* token) {
     return HOME;
   else if (!strcmp(token, "INSERT"))
     return INSERT;
-  else if (!strcmp(token, "MENU"))
-    return MENU;
-  else if (!strcmp(token, "MENU"))
-    return MENU;
-  else if (!strcmp(token, "ENTER"))
-    return ENTER;
-  else if (!strcmp(token, "SHIFT"))
-    return SHIFT;
-  else if (!strcmp(token, "TAB"))
-    return TAB;
+  else if (!strcmp(token, "DOWNARROW"))
+    return DARROW;
+  else if (!strcmp(token, "UPARROW"))
+    return UARROW;
   else if (!strcmp(token, "LEFTARROW"))
     return LARROW;
   else if (!strcmp(token, "RIGHTARROW"))
     return RARROW;
-  else if (!strcmp(token, "UPARROW"))
-    return UARROW;
-  else if (!strcmp(token, "DOWNARROW"))
-    return DARROW;
-  else if (!strcmp(token, "PAGEUP"))
-    return PAGEUP;
-  else if (!strcmp(token, "PAGEDOWN"))
-    return PAGEDOWN;
+  else if (!strcmp(token, "ENTER"))
+    return ENTER;
   else if (!strcmp(token, "SPACE"))
     return SPACE;
+  else if (!strcmp(token, "PRINTSCREEN"))
+    return PRNTSCRN;
+  else if (!strcmp(token, "SCROLLLOCK"))
+    return SCRLLCK;
+  else if (!strcmp(token, "MENU"))
+    return MENU;
+  else if (!strcmp(token, "APP"))
+    return MENU;
+  else if (!strcmp(token, "SHIFT"))
+    return SHIFT;
+  else if (!strcmp(token, "TAB"))
+    return TAB;
+  else if (!strcmp(token, "CAPSLOCK"))
+    return CAPSLOCK;
+  else if (!strcmp(token, "PAUSE"))
+    return PAUSE;
+  else if (!strcmp(token, "NUMLOCK"))
+    return NUMLOCK;
+  else if (!strcmp(token, "PAGEDOWN"))
+    return PAGEDOWN;
+  else if (!strcmp(token, "PAGEUP"))
+    return PAGEUP;
+  else if (!strcmp(token, "CLEAR"))
+    return CLEAR;
   else
     return 0;
 }
 
 
-/** Parses and executes an ArmoryDuckyScript. */
+/**
+ * Parses and executes an ArmoryDuckyScript.
+ * @param scriptfile FILE pointer to script file
+ * @param fd file descriptor for /dev/hidgX device
+ */
 void parse(FILE* scriptfile, int fd) {
   char report[8];
   char line[500];

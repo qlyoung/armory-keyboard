@@ -92,17 +92,22 @@ static struct key_t keys_escape[] = {
   {.k = GUI,      .c = 0x00, .mod=0x08}, // gui/win
   {.k = HOME,     .c = 0x4A, .mod=0x00}, // home
   {.k = INSERT,   .c = 0x49, .mod=0x00}, // insert
-  {.k = MENU,     .c = 0x76, .mod=0x00}, // menu
-  {.k = ENTER,    .c = 0x28, .mod=0x00}, // enter
-  {.k = SHIFT,    .c = 0x00, .mod=0x02}, // shift
-  {.k = TAB,      .c = 0x2B, .mod=0x00}, // tab
+  {.k = DARROW,   .c = 0x51, .mod=0x00}, // down arrow
+  {.k = UARROW,   .c = 0x52, .mod=0x00}, // up arrow
   {.k = LARROW,   .c = 0x50, .mod=0x00}, // left arrow
   {.k = RARROW,   .c = 0x4F, .mod=0x00}, // right arrow
-  {.k = UARROW,   .c = 0x52, .mod=0x00}, // up arrow
-  {.k = DARROW,   .c = 0x51, .mod=0x00}, // down arrow
-  {.k = PAGEUP,   .c = 0x4B, .mod=0x00}, // page up
-  {.k = PAGEDOWN, .c = 0x4E, .mod=0x00}, // page down
+  {.k = ENTER,    .c = 0x28, .mod=0x00}, // enter
   {.k = SPACE,    .c = 0x2C, .mod=0x00}, // space (helps with parsing)
+  {.k = PRNTSCRN, .c = 0x46, .mod=0x00}, // printscreen
+  {.k = SCRLLCK,  .c = 0x47, .mod=0x00}, // scroll lock
+  {.k = MENU,     .c = 0x76, .mod=0x00}, // menu
+  {.k = SHIFT,    .c = 0x00, .mod=0x02}, // shift
+  {.k = TAB,      .c = 0x2B, .mod=0x00}, // tab
+  {.k = CAPSLOCK, .c = 0x39, .mod=0x00}, // capslock
+  {.k = PAUSE,    .c = 0x48, .mod=0x00}, // pause
+  {.k = PAGEDOWN, .c = 0x4E, .mod=0x00}, // page down
+  {.k = PAGEUP,   .c = 0x4B, .mod=0x00}, // page up
+  {.k = CLEAR,    .c = 0x9C, .mod=0x00}, // clear
   {.k = 0x0,      .c = 0x00, .mod=0x00}
 };
 

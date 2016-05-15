@@ -66,9 +66,6 @@ combinations, and up to the operating system to interpret them.
 
 * I haven't finished implementing all the keycodes yet. Currently unimplemented are:
  * `REP`, to repeat commands
- * `SCROLLOCK`
- * `PRINTSCREEN`
- * `BREAK/PAUSE`
  * `F1` - `F12`
 
 Beyond that, everything else works as expected:

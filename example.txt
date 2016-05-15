@@ -1,0 +1,77 @@
+DEFAULT_DELAY 20
+REM set default delay after commands to 20 milliseconds
+REM lines beginning with REM are ignored
+# lines beginning with an octothorpe are also ignored
+
+# blank lines are ignored too
+
+# open a new pane in tmux
+SIMUL CTRL b
+STRING "
+DELAY 1000
+
+# try a cowsay
+STRING echo "let's try a cowsay!"
+DELAY 2000
+SIMUL CTRL u
+STRING cowsay
+SPACE
+CAPSLOCK
+STRING "usbarmory mark i"
+DELAY 500
+ENTER
+CAPSLOCK
+DELAY 3000
+STRING clear
+ENTER
+
+# print some ascii art
+STRING echo "let's try some ascii art!"
+DELAY 3000
+SIMUL CTRL u
+STRING vim
+ENTER
+STRING i
+
+STRING ,---,---,---,---,---,---,---,---,---,---,---,---,---,-------,
+ENTER
+STRING | ~ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 | [ | ] | <-    |
+ENTER
+STRING |---'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-----|
+ENTER
+STRING | ->| | " | , | . | P | Y | F | G | C | R | L | / | = |  \  |
+ENTER
+STRING |-----',--',--',--',--',--',--',--',--',--',--',--',--'-----|
+ENTER
+STRING | Caps | A | O | E | U | I | D | H | T | N | S | - |  Enter |
+ENTER
+STRING |------'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'-,-'--------|
+ENTER
+STRING |        | ; | Q | J | K | X | B | M | W | V | Z |          |
+ENTER
+STRING |------,-',--'--,'---'---'---'---'---'---'-,-'---',--,------|
+ENTER
+STRING | ctrl |  | alt |                          | alt  |  | ctrl |
+ENTER
+STRING '------'  '-----'--------------------------'------'  '------'
+ENTER
+DELAY 1000
+ENTER
+STRING Nice.
+DELAY 1500
+
+ESCAPE
+STRING :w! keyboard.txt
+DELAY 500
+ENTER
+DELAY 500
+STRING :q
+ENTER
+
+STRING cat keyboard.txt
+ENTER
+DELAY 3000
+
+STRING echo "https://github.com/qlyoung/armory-keyboard"
+ENTER
+DELAY 3000
