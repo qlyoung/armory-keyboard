@@ -37,8 +37,8 @@ straightforward to convert DuckyScripts to...uh...ArmoryDuckyScripts? We'll go w
 
 Syntax is identical to DuckyScript, with the following exceptions:
 
-* CTRL-ALT, CTRL-SHIFT, and other such combined keys have been replaced by a single keyword,
-  SIMUL. Start a line with SIMUL and follow it with up to 6 tokens or plaintext characters
+* `CTRL-ALT`, `CTRL-SHIFT`, and other such combined keys have been replaced by a single keyword,
+  `SIMUL`. Start a line with `SIMUL` and follow it with up to 6 tokens or plaintext characters
   and all 6 will be sent in one HID report, as if they were pressed at the same time.
 
 Example:
@@ -57,11 +57,11 @@ report, so I pass that option along to the user. Obviously it is up to you to se
 combinations, and up to the operating system to interpret them.
 
 * I haven't finished implementing all the keycodes yet. Currently unimplemented are:
- * REP, to repeat commands
- * SCROLLOCK
- * PRINTSCREEN
- * BREAK/PAUSE
- * F1 - F12
+ * `REP`, to repeat commands
+ * `SCROLLOCK`
+ * `PRINTSCREEN`
+ * `BREAK/PAUSE`
+ * `F1` - `F12`
 
 Beyond that, everything else works as expected:
 
