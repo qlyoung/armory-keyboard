@@ -181,7 +181,7 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
   return 0;
 }
 
-int make_hid_report_arr(char *report, int numspec, int argc, char* chars) {
+int make_hid_report_arr(char *report, int numescape, int argc, char* chars) {
   // sanity checks
   if (argc < 1) {
     fprintf(stderr, "Insane character count (%d)\n", argc);
@@ -195,18 +195,18 @@ int make_hid_report_arr(char *report, int numspec, int argc, char* chars) {
   // i'm so sorry
   switch (argc) {
     case 1:
-      return make_hid_report(report, numspec, argc, chars[0]);
+      return make_hid_report(report, numescape, argc, chars[0]);
     case 2:
-      return make_hid_report(report, numspec, argc, chars[0], chars[1]);
+      return make_hid_report(report, numescape, argc, chars[0], chars[1]);
     case 3:
-      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2]);
+      return make_hid_report(report, numescape, argc, chars[0], chars[1], chars[2]);
     case 4:
-      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3]);
+      return make_hid_report(report, numescape, argc, chars[0], chars[1], chars[2], chars[3]);
     case 5:
-      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3], chars[4]);
+      return make_hid_report(report, numescape, argc, chars[0], chars[1], chars[2], chars[3], chars[4]);
     case 6:
     default:
-      return make_hid_report(report, numspec, argc, chars[0], chars[1], chars[2], chars[3], chars[4], chars[5]);
+      return make_hid_report(report, numescape, argc, chars[0], chars[1], chars[2], chars[3], chars[4], chars[5]);
   }
 }
 
