@@ -1,9 +1,8 @@
 DEFAULT_DELAY 500
 REM delay 500 ms after each command
-REM Lines beginning with REM are skipped
-# hash style comments are also supported
 
-
+REM lines beginning with REM are skipped
+# lines beginning with a hash are also skipped
 # blank lines are ignored
 
 
