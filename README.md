@@ -4,6 +4,8 @@ armory-keyboard
 Utility for emulating a USB HID keyboard with the USBArmory.
 Kind of compatible with DuckyScript.
 
+[![asciicast](https://asciinema.org/a/45712.png)](https://asciinema.org/a/45712)
+
 Building
 --------
 ```shell
@@ -82,15 +84,12 @@ ENTER
 UPARROW
 STRING ddddd
 DELETE
-SIMUL CTRL S
-STRING memes.txt
-ENTER
 ```
 etc.
 
-A full example is available in `test.txt`
+A full example is available in `example.txt`
 
-See the DuckyScript wiki for further info.
+See the [DuckyScript](https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript) wiki for documentation on syntax.
 
 License
 -------
