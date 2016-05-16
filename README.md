@@ -48,23 +48,22 @@ Syntax is identical to DuckyScript, with the following exceptions:
 
 * `CTRL-ALT`, `CTRL-SHIFT`, and other such combined keys have been replaced by a single keyword,
   `SIMUL`. Start a line with `SIMUL` and follow it with up to 6 tokens or plaintext characters
-  and all 6 will be sent in one HID report, as if they were pressed at the same time. Note: all
-  escape tokens (`SHIFT`, `CONTROL`, `SPACE`, etc) must occur before any plaintext characters.
+  and all 6 will be sent in one HID report, as if they were pressed at the same time. Take `CTRL+ALT+DEL`
+  as an example:
 
-Example:
+  DuckyScript: `CTRL-ALT DELETE`
 
-DuckyScript: `CTRL-ALT DELETE`
+  ArmoryDuckyScript: `SIMUL CTRL ALT DELETE`
 
-ArmoryDuckyScript: `SIMUL CTRL ALT DELETE`
+  This seems more verbose at first, but it's actually better, because you can do things with
+  it that you can't really do in DuckyScript, such as:
 
-This seems more verbose at first, but it's actually better, because you can do things with
-it that you can't really do in DuckyScript, such as:
+  `SIMUL CTRL ALT ENTER SPACE MENU a `
 
-`SIMUL CTRL ALT ENTER SPACE MENU a `
-
-I have no idea why you would want to do this, but HID supports sending up to 6 keys per
-report, so I pass that option along to the user. Obviously it is up to you to send sane
-combinations, and up to the operating system to interpret them.
+  I have no idea why you would want to do this, but HID supports sending up to 6 keys per
+  report, so I pass that option along to the user. Obviously it is up to you to send sane
+  combinations, and up to the operating system to interpret them.
+  Note: all escape tokens (`SHIFT`, `CONTROL`, `SPACE`, etc) must occur before any plaintext characters.
 
 * I haven't finished implementing all the keycodes yet. Currently unimplemented are:
  * `REP`, to repeat commands
@@ -74,9 +73,9 @@ combinations, and up to the operating system to interpret them.
 
 * DEFAULT_DELAY may occur at any point in the script, and overrides the previous default delay.
 
-Examples are located in the examples/ directory.
+Examples are located in the `examples/` directory.
 
-See the [DuckyScript](https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript) wiki for documentation on syntax.
+See the [DuckyScript](https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript) wiki for further documentation on syntax.
 
 License
 -------
