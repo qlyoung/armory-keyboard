@@ -65,9 +65,8 @@ Syntax is identical to DuckyScript, with the following exceptions:
   combinations, and up to the operating system to interpret them.
   Note: all escape tokens (`SHIFT`, `CONTROL`, `SPACE`, etc) must occur before any plaintext characters.
 
-* I haven't finished implementing all the keycodes yet. Currently unimplemented are:
+* I haven't finished implementing all the syntax yet. Currently unimplemented are:
  * `REP`, to repeat commands
- * `F1` - `F12`
 
 * Lines may be at most 500 characters. Excess characters will be ignored.
 
