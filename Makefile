@@ -1,6 +1,9 @@
 CC=gcc
 CFLAGS=-Wall -std=gnu11
 
-type: kybdutil.o
+type: src/type.c src/kybdutil.c src/kybdutil.h
+	$(CC) $(CFLAGS) -o $@ $^
+	rm -f *.o
+
 clean:
-	rm -rf *.o type
+	rm -f *.o type
