@@ -126,35 +126,23 @@ void parse(FILE* scriptfile, int fd) {
   char line[501];
   char *command;
 
-  // skip any comments at the beginning of the script
-  do {
-    fgets(line, sizeof(line), scriptfile);
-    // echo script line if it's not empty
-    if (strlen(line) > 1)
-      printf("%s", line);
-    // get first token
-    command = strtok(line, " \n");
-  } while (command == NULL || !strcmp(command, "#") || !strcmp(command, "REM"));
-
-  // check for default delay setting
-  if (!strcmp(command, "DEFAULT_DELAY") || !strcmp(command, "DEFAULTDELAY")) {
-    if (sscanf(strtok(NULL, " "), "%ld", &defdelay) == 0)
-      err(ERR_INVALID_TOKEN, false);
-  }
-  else // reset file pointer
-    rewind(scriptfile);
-
   // loop over line
   while (fgets(line, sizeof(line), scriptfile)) {
     // echo script line if it's not empty
     if (strlen(line) > 1)
       printf("%s", line);
     // get command
-    char* command = strtok(line, " \n");
+    command = strtok(line, " \n");
     // if the line is blank or a comment, skip it
     if (command == NULL || !strcmp(command, "REM") || !strcmp(command, "#")) continue;
     // clear HID report
     memset(report, 0x0, sizeof(report));
+
+    if (!strcmp(command, "DEFAULT_DELAY") || !strcmp(command, "DEFAULTDELAY")) {
+      if (sscanf(strtok(NULL, " "), "%ld", &defdelay) == 0)
+        err(ERR_INVALID_TOKEN, false);
+        continue;
+    }
 
     // if cascade for control commands
     if (!strcmp(command, "DELAY")) {

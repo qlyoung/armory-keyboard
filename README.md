@@ -72,6 +72,8 @@ combinations, and up to the operating system to interpret them.
 
 * Lines may be at most 500 characters. Excess characters will be ignored.
 
+* DEFAULT_DELAY may occur at any point in the script, and overrides the previous default delay.
+
 Beyond that, everything else works as expected:
 
 ```
