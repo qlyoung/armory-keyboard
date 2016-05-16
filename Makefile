@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -std=gnu11
 
-type: src/type.c src/kybdutil.c src/kybdutil.h
+type: src/*
 	$(CC) $(CFLAGS) -o $@ $^
 	rm -f *.o
 

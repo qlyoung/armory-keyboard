@@ -74,24 +74,7 @@ combinations, and up to the operating system to interpret them.
 
 * DEFAULT_DELAY may occur at any point in the script, and overrides the previous default delay.
 
-Beyond that, everything else works as expected:
-
-```
-DEFAULT_DELAY 1000
-SIMUL GUI d
-SIMUL GUI r
-STRING notepad.exe
-ENTER
-STRING ayyy lmao
-HOME
-ENTER
-UPARROW
-STRING ddddd
-DELETE
-```
-etc.
-
-A full example is available in `example.txt`
+Examples are located in the examples/ directory.
 
 See the [DuckyScript](https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript) wiki for documentation on syntax.
 
