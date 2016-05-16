@@ -17,7 +17,7 @@
  * a bit field that indicates what bits of the modifier byte
  * must be set to produce it.
  *
- * Used to map characters to their keycodes.
+ * Used to map keyboard characters to their keycodes.
  */
 struct key_t {
   // literal character or escape code
@@ -108,6 +108,18 @@ static struct key_t keys_escape[] = {
   {.k = PAGEDOWN, .c = 0x4E, .mod=0x00}, // page down
   {.k = PAGEUP,   .c = 0x4B, .mod=0x00}, // page up
   {.k = CLEAR,    .c = 0x9C, .mod=0x00}, // clear
+  {.k = F1,       .c = 0x3A, .mod=0x00}, // F1
+  {.k = F2,       .c = 0x3B, .mod=0x00}, // F2
+  {.k = F3,       .c = 0x3C, .mod=0x00}, // F3
+  {.k = F4,       .c = 0x3D, .mod=0x00}, // F4
+  {.k = F5,       .c = 0x3E, .mod=0x00}, // F5
+  {.k = F6,       .c = 0x3F, .mod=0x00}, // F6
+  {.k = F7,       .c = 0x40, .mod=0x00}, // F7
+  {.k = F8,       .c = 0x41, .mod=0x00}, // F8
+  {.k = F9,       .c = 0x42, .mod=0x00}, // F9
+  {.k = F10,      .c = 0x43, .mod=0x00}, // F10
+  {.k = F11,      .c = 0x44, .mod=0x00}, // F11
+  {.k = F12,      .c = 0x45, .mod=0x00}, // F12
   {.k = 0x0,      .c = 0x00, .mod=0x00}
 };
 

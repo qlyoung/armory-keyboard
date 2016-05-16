@@ -30,6 +30,18 @@
 #define PAGEDOWN    'x'
 #define PAGEUP      'y'
 #define CLEAR       'z'
+#define F1          '1'
+#define F2          '2'
+#define F3          '3'
+#define F4          '4'
+#define F5          '5'
+#define F6          '6'
+#define F7          '7'
+#define F8          '8'
+#define F9          '9'
+#define F10         '0'
+#define F11         '!'
+#define F12         '@'
 
 /**
  * Fills out an 8-byte array with a USB HID keyboard report.

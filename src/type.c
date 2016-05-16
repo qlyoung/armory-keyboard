@@ -109,6 +109,30 @@ char map_escape(char* token) {
     return PAGEUP;
   else if (!strcmp(token, "CLEAR"))
     return CLEAR;
+  else if (!strcmp(token, "F1"))
+    return F1;
+  else if (!strcmp(token, "F2"))
+    return F2;
+  else if (!strcmp(token, "F3"))
+    return F3;
+  else if (!strcmp(token, "F4"))
+    return F4;
+  else if (!strcmp(token, "F5"))
+    return F5;
+  else if (!strcmp(token, "F6"))
+    return F6;
+  else if (!strcmp(token, "F7"))
+    return F7;
+  else if (!strcmp(token, "F8"))
+    return F8;
+  else if (!strcmp(token, "F9"))
+    return F9;
+  else if (!strcmp(token, "F10"))
+    return F10;
+  else if (!strcmp(token, "F11"))
+    return F11;
+  else if (!strcmp(token, "F12"))
+    return F12;
   else
     return 0;
 }
