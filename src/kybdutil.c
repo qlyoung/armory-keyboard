@@ -105,6 +105,7 @@ static struct key_t keys_escape[] = {
   {.k = TAB,      .c = 0x2B, .mod=0x00}, // tab
   {.k = CAPSLOCK, .c = 0x39, .mod=0x00}, // capslock
   {.k = PAUSE,    .c = 0x48, .mod=0x00}, // pause
+  {.k = NUMLOCK,  .c = 0x53, .mod=0x00}, // numlock (keypad)
   {.k = PAGEDOWN, .c = 0x4E, .mod=0x00}, // page down
   {.k = PAGEUP,   .c = 0x4B, .mod=0x00}, // page up
   {.k = CLEAR,    .c = 0x9C, .mod=0x00}, // clear
