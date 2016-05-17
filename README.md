@@ -68,6 +68,7 @@ Syntax is identical to DuckyScript, with the following exceptions:
 * I haven't finished implementing all the syntax yet. Currently unimplemented are:
  * `REPEAT`, to repeat commands
  * `COMMAND` for OSX
+ * Layouts other than USA
 
 * Lines may be at most 500 characters. Excess characters will be ignored.
 
