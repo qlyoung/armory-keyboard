@@ -76,6 +76,14 @@ Examples are located in the `examples/` directory.
 
 See the [DuckyScript](https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript) wiki for further documentation on syntax.
 
+Contributing
+------------
+Fork & PR! Open to improvements and bugfixes (there are almost certainly bugs).
+
+Wishlist / Planned Features:
+* HID support for [libusbgx](https://github.com/libusbgx/libusbgx)
+* International layout support
+
 License
 -------
 ```
