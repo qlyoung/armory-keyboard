@@ -65,21 +65,24 @@ char map_escape(char* token) {
     return ESCAPE;
   else if (!strcmp(token, "END"))
     return END;
-  else if (!strcmp(token, "GUI"))
-    return GUI;
-  else if (!strcmp(token, "WINDOWS"))
+  else if (!strcmp(token, "GUI") ||
+           !strcmp(token, "WINDOWS"))
     return GUI;
   else if (!strcmp(token, "HOME"))
     return HOME;
   else if (!strcmp(token, "INSERT"))
     return INSERT;
-  else if (!strcmp(token, "DOWNARROW"))
+  else if (!strcmp(token, "DOWNARROW") ||
+           !strcmp(token, "DOWN"))
     return DARROW;
-  else if (!strcmp(token, "UPARROW"))
+  else if (!strcmp(token, "UPARROW") ||
+           !strcmp(token, "UP"))
     return UARROW;
-  else if (!strcmp(token, "LEFTARROW"))
+  else if (!strcmp(token, "LEFTARROW") ||
+           !strcmp(token, "LEFT"))
     return LARROW;
-  else if (!strcmp(token, "RIGHTARROW"))
+  else if (!strcmp(token, "RIGHTARROW") ||
+           !strcmp(token, "RIGHT"))
     return RARROW;
   else if (!strcmp(token, "ENTER"))
     return ENTER;
