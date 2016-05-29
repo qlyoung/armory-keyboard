@@ -1,8 +1,12 @@
 #include <stdio.h>
 
 #define DEFAULT_HID_DEVICE "/dev/hidg0"
+
+#define ERR_USAGE "usage: ./type <script> [/dev/hidgX]"
 #define ERR_INVALID_TOKEN "Invalid token, skipping line."
-#define ERR_INVALID_HIDDEV "Bad HID device."
+#define ERR_CANNOT_WRITE_HID "Error writing HID report."
+#define ERR_CANNOT_OPEN_OUTFILE "Error opening output file."
+#define ERR_CANNOT_OPEN_INFILE "Error opening script file."
 
 /**
  * Writes the HID report follows by an empty report to the

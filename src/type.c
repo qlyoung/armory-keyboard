@@ -15,8 +15,14 @@
  * @param message null-terminated error message
  * @param fatal whether this error should kill the program
  */
-void err(char *message, bool fatal) {
-  fprintf(stderr, "[!] %s\n", message);
+void err(const char *message, bool perr, bool fatal) {
+  if (perr)
+    perror(message);
+  else {
+    char *prefix = fatal ? "[X]" : "[!]";
+    fprintf(stderr, "%s %s\n", prefix, message);
+  }
+
   if (fatal)
     exit(1);
 }
@@ -36,13 +42,13 @@ void millisleep(long milliseconds) {
 void write_report(char* report, FILE* file) {
   // send key
   if (fwrite(report, (size_t) 1, sizeof(report), file) != sizeof(report))
-    err(ERR_INVALID_HIDDEV, true);
+    err(ERR_CANNOT_WRITE_HID, false, true);
 
   // send empty key
   memset(report, 0x0, 8);
 
   if (fwrite(report, (size_t) 1, sizeof(report), file) != sizeof(report))
-    err(ERR_INVALID_HIDDEV, true);
+    err(ERR_CANNOT_WRITE_HID, false, true);
 
   fflush(file);
 }
@@ -164,7 +170,7 @@ void parse(FILE* scriptfile, FILE* file) {
 
     if (!strcmp(command, "DEFAULT_DELAY") || !strcmp(command, "DEFAULTDELAY")) {
       if (sscanf(strtok(NULL, " "), "%ld", &defdelay) == 0)
-        err(ERR_INVALID_TOKEN, false);
+        err(ERR_INVALID_TOKEN, false, false);
         continue;
     }
 
@@ -173,7 +179,7 @@ void parse(FILE* scriptfile, FILE* file) {
       // read delay
       int delay = 0;
       if (sscanf(strtok(NULL, " \n"), "%d", &delay) == 0) {
-        err(ERR_INVALID_TOKEN, false);
+        err(ERR_INVALID_TOKEN, false, false);
         continue;
       }
       // execute delay
@@ -184,7 +190,7 @@ void parse(FILE* scriptfile, FILE* file) {
       char *str = strtok(NULL, "\n");
       // if no string, err
       if (str == NULL) {
-        err(ERR_INVALID_TOKEN, false);
+        err(ERR_INVALID_TOKEN, false, false);
         continue;
       }
       // send each character one by one
@@ -230,7 +236,7 @@ void parse(FILE* scriptfile, FILE* file) {
       }
       // if broke loop because of error, skip line
       if (invalid) {
-        err(ERR_INVALID_TOKEN, false);
+        err(ERR_INVALID_TOKEN, false, false);
         continue;
       }
       // generate report
@@ -242,7 +248,7 @@ void parse(FILE* scriptfile, FILE* file) {
       char esc = map_escape(command);
       // if it's not a valid escape, print err and skip line
       if (esc == 0) {
-        err(ERR_INVALID_TOKEN, false);
+        err(ERR_INVALID_TOKEN, false, false);
         continue;
       }
       make_hid_report(report, 1, 1, esc);
@@ -256,10 +262,8 @@ void parse(FILE* scriptfile, FILE* file) {
 
 int main(int argc, char** argv) {
   // sanity check on argument count
-  if (argc < 2) {
-    printf("usage: %s <script> [/dev/hidgX]\n", argv[0]);
-    return EXIT_FAILURE;
-  }
+  if (argc < 2)
+    err(ERR_USAGE, false, true);
 
   // device file that we will write HID reports to
   char* dev_filename = DEFAULT_HID_DEVICE;
@@ -270,17 +274,13 @@ int main(int argc, char** argv) {
 
   // open device file
   FILE *devfile = fopen(dev_filename, "a");
-  if (devfile == NULL) {
-    perror("Error opening device file: ");
-    return EXIT_FAILURE;
-  }
+  if (devfile == NULL)
+    err(ERR_CANNOT_OPEN_OUTFILE, true, true);
 
   // open script file
   FILE* infile = fopen(argv[1], "rb");
-  if (infile == NULL) {
-    perror("Error opening script file: ");
-    return EXIT_FAILURE;
-  }
+  if (infile == NULL)
+    err(ERR_CANNOT_OPEN_INFILE, true, true);
 
   parse(infile, devfile);
 
