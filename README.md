@@ -46,10 +46,10 @@ straightforward to convert DuckyScripts to...uh...ArmoryDuckyScripts? We'll go w
 
 Syntax is identical to DuckyScript, with the following exceptions:
 
-* `CTRL-ALT`, `CTRL-SHIFT`, and other such combined keys have been replaced by a single keyword,
-  `SIMUL`. Start a line with `SIMUL` and follow it with up to 6 tokens or plaintext characters
-  and all 6 will be sent in one HID report, as if they were pressed at the same time. Take `CTRL+ALT+DEL`
-  as an example:
+* `CTRL-ALT`+key, `CTRL-SHIFT`+key, `ALT`+key, `SHIFT`+key, `CTRL`+key, and `GUI`+key combinations
+  have all been replaced by a single keyword, `SIMUL`. Start a line with `SIMUL` and follow it with up
+  to 6 space-delimited tokens or plaintext characters and all 6 will be sent in one HID report, as if they
+  were pressed at the same time. Take `CTRL+ALT+DEL` as an example:
 
   DuckyScript: `CTRL-ALT DELETE`
 
@@ -67,11 +67,12 @@ Syntax is identical to DuckyScript, with the following exceptions:
 
 * I haven't finished implementing all the syntax yet. Currently unimplemented are:
  * `REPEAT`, to repeat commands
- * `ALT-SHIFT`, to switch keyboard layouts (not yet supported)
+ * `COMMAND` for OSX
+ * Layouts other than USA
 
 * Lines may be at most 500 characters. Excess characters will be ignored.
 
-* DEFAULT_DELAY may occur at any point in the script, and overrides the previous default delay.
+* `DEFAULT_DELAY` may occur at any point in the script, and overrides the previous default delay.
 
 Examples are located in the `examples/` directory.
 
