@@ -9,4 +9,4 @@ type: $(sourcedir)/*
 	rm -f *.o
 
 clean:
-	rm -f *.o $(builddir)/*
+	rm -f *.o $(builddir)/type
