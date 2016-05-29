@@ -180,7 +180,9 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
   va_end(chars);
 
   // assert report is not empty
-  assert(report[2] != 0 || report[0] != 0);
+  assert(report[2] != 0x00 || report[0] != 0x00);
+  // assert reserved byte is empty
+  assert(report[1] == 0x00);
 
   return 0;
 }
