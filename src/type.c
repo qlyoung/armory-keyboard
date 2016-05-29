@@ -1,17 +1,14 @@
+#include "type.h"
+
 #include <fcntl.h>
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <errno.h>
 
 #include "kybdutil.h"
-
-#define DEFAULT_HID_DEVICE "/dev/hidg0"
-#define ERR_INVALID_TOKEN "Invalid token, skipping line."
-#define ERR_INVALID_HIDDEV "Bad HID device."
 
 /**
  * Displays error message and exits if fatal is true.
