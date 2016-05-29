@@ -44,6 +44,8 @@ void write_report(char* report, FILE* file) {
   if (fwrite(report, (size_t) 1, sizeof(report), file) != sizeof(report))
     err(ERR_CANNOT_WRITE_HID, false, true);
 
+  fflush(file);
+
   // send empty key
   memset(report, 0x0, 8);
 
@@ -265,6 +267,11 @@ int main(int argc, char** argv) {
   if (argc < 2)
     err(ERR_USAGE, false, true);
 
+  // open script file
+  FILE* infile = fopen(argv[1], "rb");
+  if (infile == NULL)
+    err(ERR_CANNOT_OPEN_INFILE, true, true);
+
   // device file that we will write HID reports to
   char* dev_filename = DEFAULT_HID_DEVICE;
 
@@ -276,11 +283,6 @@ int main(int argc, char** argv) {
   FILE *devfile = fopen(dev_filename, "a");
   if (devfile == NULL)
     err(ERR_CANNOT_OPEN_OUTFILE, true, true);
-
-  // open script file
-  FILE* infile = fopen(argv[1], "rb");
-  if (infile == NULL)
-    err(ERR_CANNOT_OPEN_INFILE, true, true);
 
   parse(infile, devfile);
 
