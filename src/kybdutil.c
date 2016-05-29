@@ -13,13 +13,6 @@
 #include <stdarg.h>
 #include "kybdutil.h"
 
-// some error codes
-#define ERR_BAD_ESCAPE_CNT "Bad escape count"
-#define ERR_BAD_CHAR_CNT "Bad character count"
-#define ERR_UNKNOWN_ESCAPE "Unknown escape character"
-#define ERR_UNKNOWN_CHAR "Keycode unknown for character"
-
-
 /**
  * Keycode struct. Holds a character, its HID Usage ID, and
  * a bit field that indicates what bits of the modifier byte
@@ -150,10 +143,6 @@ const struct key_t *find_key(char keychar, struct key_t table[]) {
 }
 
 int make_hid_report(char *report, int numescape, int argc, ...) {
-  // assert argument count parameters are sane
-  assert(argc <= 6 && argc >= 1);
-  assert(numescape <= argc && numescape >= 0);
-
   va_list chars;
   va_start(chars, argc);
 
@@ -197,10 +186,6 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
 }
 
 int make_hid_report_arr(char *report, int numescape, int argc, char* chars) {
-  // assert argument count parameters are sane
-  assert(argc <= 6 && argc >= 1);
-  assert(numescape <= argc && numescape >= 0);
-
   // i'm so sorry
   switch (argc) {
     case 1:

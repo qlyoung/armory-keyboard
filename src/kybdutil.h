@@ -49,7 +49,7 @@
  * Characters may be specified by passing them as variable arguments.
  * To specify special characters such as backspace, enter, insert, etc.
  * simply pass the corresponding escape code. Escape codes have been
- * #define'd in this header. Since they are simply lowercase ASCII letters,
+ * #define'd in kybdutil.h. Since they are simply lowercase ASCII letters,
  * in order to separate them from literal letters you must pass any special
  * characters at the beginning of your argument list and specify their number
  * in the numescape argument. The total number of keys must be specified
@@ -77,9 +77,11 @@
  * USB Device Class Definition for Human Interface Devices (HID) Appendix B.1
  * USB HID Usage Tables, Section 10 (Keyboards)
  *
- * Asserts:
- *  1 < argc < 6
- *  0 < numescape < argc
+ * numescape and argc parameters must satisfy the following conditions:
+ *  1 <= argc <= 6
+ *  0 <= numescape <= argc
+ *
+ * If they do not, behavior is undefined.
  *
  * @param[out] report pointer to 8 byte array of char to store the result in
  * @param[in] the number of escape characters passed
@@ -95,7 +97,7 @@ int make_hid_report(char *report, int numescape, int argc, ...);
  * Characters may be specified by passing them as variable arguments.
  * To specify special characters such as backspace, enter, insert, etc.
  * simply pass the corresponding escape code. Escape codes have been
- * #define'd in this header. Since they are simply lowercase ASCII letters,
+ * #define'd in kybdutil.h. Since they are simply lowercase ASCII letters,
  * in order to separate them from literal letters you must pass any special
  * characters at the beginning of your argument list and specify their number
  * in the numescape argument. The total number of keys must be specified
@@ -124,9 +126,11 @@ int make_hid_report(char *report, int numescape, int argc, ...);
  * USB Device Class Definition for Human Interface Devices (HID) Appendix B.1
  * USB HID Usage Tables, Section 10 (Keyboards)
  *
- * Asserts:
- *  1 < argc < 6
- *  0 < numescape < argc
+ * numescape and argc parameters must satisfy the following conditions:
+ *  1 <= argc <= 6
+ *  0 <= numescape <= argc
+ *
+ * If they do not, behavior is undefined.
  *
  * @param[out] report pointer to 8 byte array of char to store the result in
  * @param[in] the number of escape characters passed
