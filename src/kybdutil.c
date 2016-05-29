@@ -6,6 +6,7 @@
  *  Collin Mulliner (collin AT mulliner.org)
  */
 
+#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
@@ -149,41 +150,30 @@ const struct key_t *find_key(char keychar, struct key_t table[]) {
 }
 
 int make_hid_report(char *report, int numescape, int argc, ...) {
-  // sanity checks
-  if (argc < 1) {
-    fprintf(stderr, "[!] "ERR_BAD_CHAR_CNT": %d\n", argc);
-    return -1;
-  }
-  if (numescape < 0) {
-    fprintf(stderr, "[!] "ERR_BAD_ESCAPE_CNT": %d\n", numescape);
-    return -1;
-  }
+  // assert argument count parameters are sane
+  assert(argc <= 6 && argc >= 1);
+  assert(numescape <= argc && numescape >= 0);
 
   va_list chars;
   va_start(chars, argc);
 
   int index = 2;
 
-  argc = argc > 6 ? 6 : argc;
   for (int ic = 0; ic < argc; ic++) {
+    // assert report index is in range
+    assert(index < 7);
+
     char input = (char) va_arg(chars, int);
 
     // if processing escapes, search for character in escape table
     if (ic < numescape) {
       const struct key_t * match = find_key(input, keys_escape);
-      if (match != NULL) {
-        report[index] = match->c;
-        report[0] |= match->mod;
-      }
-      else {
-        fprintf(stderr, ERR_UNKNOWN_ESCAPE": %c\n", input);
-        return -1;
-      }
+      if (match == NULL) return -1;
+      report[index] = match->c;
+      report[0] |= match->mod;
     }
     else if (isalpha(input)) {
-      // see HID Usage Tables page 0x07 for this conversion
       report[index] = tolower(input) - ('a' - 4);
-      // if uppercase character, set l+r shift in modifier
       if (isupper(input))
         report[0] = 0x22;
     }
@@ -192,32 +182,24 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
     }
     else if (ispunct(input)) {
       const struct key_t * match = find_key(input, keys_symbol);
-      if (match != NULL) {
-        report[index] = match->c;
-        report[0] |= match->mod;
-      }
-      else {
-        fprintf(stderr, "[!] "ERR_UNKNOWN_CHAR": %c\n", input);
-        return -1;
-      }
+      if (match == NULL) return -1;
+      report[index] = match->c;
+      report[0] |= match->mod;
     }
     index++;
   }
   va_end(chars);
 
+  // assert report is not empty
+  assert(report[2] != 0 || report[0] != 0);
+
   return 0;
 }
 
 int make_hid_report_arr(char *report, int numescape, int argc, char* chars) {
-  // sanity checks
-  if (argc < 1) {
-    fprintf(stderr, "[!] Insane character count (%d)\n", argc);
-    return -1;
-  }
-  if (numescape < 0) {
-    fprintf(stderr, "[!] Insane escape count (%d)\n", numescape);
-    return -1;
-  }
+  // assert argument count parameters are sane
+  assert(argc <= 6 && argc >= 1);
+  assert(numescape <= argc && numescape >= 0);
 
   // i'm so sorry
   switch (argc) {

@@ -71,36 +71,38 @@
  *
  * Uppercase alpha character are handled by converting them to lowercase,
  * coding for the lowercase key, and indicating l+r shift in the modifier byte.
- *
- * If the report was filled successfully, this function returns 0. Otherwise
- * it prints the error to stdout and returns 1.
+ * See HID Usage Tables, Page 0x07 for this conversion.
  *
  * For a detailed explanation of the report format, see:
  * USB Device Class Definition for Human Interface Devices (HID) Appendix B.1
  * USB HID Usage Tables, Section 10 (Keyboards)
  *
+ * Asserts:
+ *  1 < argc < 6
+ *  0 < numescape < argc
+ *
  * @param[out] report pointer to 8 byte array of char to store the result in
  * @param[in] the number of escape characters passed
  * @param[in] argc the total number of characters passed
  * @param[in] ... the characters to encode into the report, escapes first
+ * @return 0 on success, -1 if a character with no known mapping is encountered
  */
 int make_hid_report(char *report, int numescape, int argc, ...);
 
 /**
  * Fills out an 8-byte array with a USB HID keyboard report.
  *
- * Characters may be specified by passing a pointer to a char array.
+ * Characters may be specified by passing them as variable arguments.
  * To specify special characters such as backspace, enter, insert, etc.
  * simply pass the corresponding escape code. Escape codes have been
  * #define'd in this header. Since they are simply lowercase ASCII letters,
  * in order to separate them from literal letters you must pass any special
- * characters at the beginning of the array and specify their number
+ * characters at the beginning of your argument list and specify their number
  * in the numescape argument. The total number of keys must be specified
  * in the argc argument.
  *
  * Example call to send GUI + r, which has 1 escape code and 1 ASCII character:
- * char chars[2] = { GUI, 'r' };
- * make_hid_report(report, 1, 2, &chars);
+ * make_hid_report(report, 1, 2, GUI, 'r');
  *
  * The 8-byte char array pointed to by report will then contain an HID report
  * specifying the GUI + r key combo (1 special key, 2 keys total).
@@ -115,17 +117,20 @@ int make_hid_report(char *report, int numescape, int argc, ...);
  *
  * Uppercase alpha character are handled by converting them to lowercase,
  * coding for the lowercase key, and indicating l+r shift in the modifier byte.
- *
- * If the report was filled successfully, this function returns 0. Otherwise
- * it prints the error to stdout and returns 1.
+ * See HID Usage Tables, Page 0x07 for this conversion.
  *
  * For a detailed explanation of the report format, see:
  * USB Device Class Definition for Human Interface Devices (HID) Appendix B.1
  * USB HID Usage Tables, Section 10 (Keyboards)
  *
+ * Asserts:
+ *  1 < argc < 6
+ *  0 < numescape < argc
+ *
  * @param[out] report pointer to 8 byte array of char to store the result in
  * @param[in] the number of escape characters passed
  * @param[in] argc the total number of characters passed
  * @param[in] chars pointer to array of chars to encode into the array, escapes first
+ * @return 0 on success, -1 if a character with no known mapping is encountered
  */
 int make_hid_report_arr(char *report, int numescape, int argc, char *chars);
