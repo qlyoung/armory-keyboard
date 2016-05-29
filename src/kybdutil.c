@@ -124,6 +124,15 @@ static struct key_t keys_escape[] = {
   {.k = 0x0,      .c = 0x00, .mod=0x00}
 };
 
+const struct key_t *find_key(char keychar, struct key_t table[]) {
+  // linear search; could be changed to bsearch with ordered keycodes
+  for (int i = 0; table[i].k != 0; i++) {
+    if (keychar == table[i].k)
+      return &table[i];
+  }
+  return NULL;
+}
+
 int make_hid_report(char *report, int numescape, int argc, ...) {
   // sanity checks
   if (argc < 1) {
@@ -146,18 +155,14 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
 
     // if processing escapes, search for character in escape table
     if (ic < numescape) {
-      for (int i = 0; i < sizeof(keys_escape); i++) {
-        if (input == keys_escape[i].k) {
-          if (keys_escape[i].c != 0)
-            report[index] = keys_escape[i].c;
-          report[0] |= keys_escape[i].mod;
-          index++;
-          break;
-        }
-        if (keys_escape[i].k == 0) {
-          fprintf(stderr, "[!] Unknown escape character: %c\n", input);
-          return -1;
-        }
+      const struct key_t * match = find_key(input, keys_escape);
+      if (match != NULL) {
+        report[index] = match->c;
+        report[0] |= match->mod;
+      }
+      else {
+        fprintf(stderr, "[!] Unknown escape character: %c\n", input);
+        return -1;
       }
     }
     else if (isalpha(input)) {
@@ -172,17 +177,15 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
       report[index] = keys_num[input - '0'].c;
       index++;
     }
-    else if (isprint(input)) {
-      for (int i = 0; i < sizeof(keys_symbol); i++) {
-        if (input == keys_symbol[i].k) {
-          if (keys_symbol[i].c != 0)
-            report[index] = keys_symbol[i].c;
-          report[0] |= keys_symbol[i].mod;
-          index++;
-          break;
-        }
-        if (keys_symbol[i].k == 0)
-          break;
+    else if (ispunct(input)) {
+      const struct key_t * match = find_key(input, keys_symbol);
+      if (match != NULL) {
+        report[index] = match->c;
+        report[0] |= match->mod;
+      }
+      else {
+        fprintf(stderr, "[!] Unknown escape character: %c\n", input);
+        return -1;
       }
     }
 
