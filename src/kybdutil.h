@@ -102,7 +102,8 @@ int make_hid_report(char *report, int numescape, int argc, ...);
  * in the argc argument.
  *
  * Example call to send GUI + r, which has 1 escape code and 1 ASCII character:
- * make_hid_report(report, 1, 2, GUI, 'r');
+ * char chars[2] = { GUI, 'r' };
+ * make_hid_report(report, 1, 2, &chars);
  *
  * The 8-byte char array pointed to by report will then contain an HID report
  * specifying the GUI + r key combo (1 special key, 2 keys total).
