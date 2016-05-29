@@ -1,9 +1,12 @@
 CC=gcc
 CFLAGS=-Wall -std=gnu11 -g
 
-type: src/*
-	$(CC) $(CFLAGS) -o $@ $^
+sourcedir = src
+builddir  = build
+
+type: $(sourcedir)/*
+	$(CC) $(CFLAGS) -o $(builddir)/$@ $^
 	rm -f *.o
 
 clean:
-	rm -f *.o type
+	rm -f *.o $(builddir)/*

@@ -43,6 +43,8 @@ void write_report(char* report, FILE* file) {
 
   if (fwrite(report, (size_t) 1, sizeof(report), file) != sizeof(report))
     err(ERR_INVALID_HIDDEV, true);
+
+  fflush(file);
 }
 
 char map_escape(char* token) {
