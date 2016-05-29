@@ -1,10 +1,12 @@
 #include <fcntl.h>
 #include <string.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+
 #include "kybdutil.h"
 
 #define DEFAULT_HID_DEVICE "/dev/hidg0"
@@ -34,22 +36,18 @@ void millisleep(long milliseconds) {
   nanosleep(&ts, NULL);
 }
 
-/**
- * Sends the HID report to the specified character device.
- * @param report the 8-byte HID report
- * @param device file descript of HID character device (/dev/hidgX)
- */
-void sendreport(char* report, int device) {
+void write_report(char* report, FILE* file) {
   // send key
-  if (write(device, report, sizeof(report)) != sizeof(report))
+  if (fwrite(report, (size_t) 1, sizeof(report), file) != sizeof(report))
     err(ERR_INVALID_HIDDEV, true);
+
   // send empty key
   memset(report, 0x0, 8);
-  if (write(device, report, sizeof(report)) != sizeof(report))
+
+  if (fwrite(report, (size_t) 1, sizeof(report), file) != sizeof(report))
     err(ERR_INVALID_HIDDEV, true);
 }
 
-/* maps DuckyScript special keywords to their char values */
 char map_escape(char* token) {
   if (!strcmp(token, "ALT"))
     return ALT;
@@ -148,7 +146,7 @@ long defdelay = 0;
  * @param scriptfile FILE pointer to script file
  * @param fd file descriptor for /dev/hidgX device
  */
-void parse(FILE* scriptfile, int fd) {
+void parse(FILE* scriptfile, FILE* file) {
   char report[8];
   char line[501];
   char *command;
@@ -194,7 +192,7 @@ void parse(FILE* scriptfile, int fd) {
       for (int i = 0; i < strlen(str); i++) {
         // convert character to HID report
         make_hid_report(report, 0, 1, str[i]);
-        sendreport(report, fd);
+        write_report(report, file);
       }
     }
     // because duckyscript was created by skids
@@ -238,7 +236,7 @@ void parse(FILE* scriptfile, int fd) {
       }
       // generate report
       make_hid_report_arr(report, num_escapes, i, simuls);
-      sendreport(report, fd);
+      write_report(report, file);
     }
     // if it wasn't anything else, try to map token to an escape
     else {
@@ -249,7 +247,7 @@ void parse(FILE* scriptfile, int fd) {
         continue;
       }
       make_hid_report(report, 1, 1, esc);
-      sendreport(report, fd);
+      write_report(report, file);
     }
 
     // sleep for default delay
@@ -261,7 +259,7 @@ int main(int argc, char** argv) {
   // sanity check on argument count
   if (argc < 2) {
     printf("usage: %s <script> [/dev/hidgX]\n", argv[0]);
-    return 0;
+    return EXIT_FAILURE;
   }
 
   // device file that we will write HID reports to
@@ -271,16 +269,21 @@ int main(int argc, char** argv) {
   if (argc > 2)
       dev_filename = argv[2];
 
-  // attempt to open device file
-  int dev_fd;
-  if ((dev_fd = open(dev_filename, O_RDWR, 0666)) == -1) {
-      perror(dev_filename);
-      return 3;
+  // open device file
+  FILE *devfile = fopen(dev_filename, "a");
+  if (devfile == NULL) {
+    perror("Error opening device file: ");
+    return EXIT_FAILURE;
   }
 
-  // open and parse file
+  // open script file
   FILE* infile = fopen(argv[1], "rb");
-  parse(infile, dev_fd);
+  if (infile == NULL) {
+    perror("Error opening script file: ");
+    return EXIT_FAILURE;
+  }
 
-  return 0;
+  parse(infile, devfile);
+
+  return EXIT_SUCCESS;
 }
