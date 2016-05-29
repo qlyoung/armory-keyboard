@@ -78,8 +78,14 @@
  * For a detailed explanation of the report format, see:
  * USB Device Class Definition for Human Interface Devices (HID) Appendix B.1
  * USB HID Usage Tables, Section 10 (Keyboards)
+ *
+ * @param[out] report pointer to 8 byte array of char to store the result in
+ * @param[in] the number of escape characters passed
+ * @param[in] argc the total number of characters passed
+ * @param[in] ... the characters to encode into the report, escapes first
  */
-int make_hid_report(char *, int, int, ...);
+int make_hid_report(char *report, int numescape, int argc, ...);
+
 /**
  * Fills out an 8-byte array with a USB HID keyboard report.
  *
@@ -116,5 +122,10 @@ int make_hid_report(char *, int, int, ...);
  * For a detailed explanation of the report format, see:
  * USB Device Class Definition for Human Interface Devices (HID) Appendix B.1
  * USB HID Usage Tables, Section 10 (Keyboards)
+ *
+ * @param[out] report pointer to 8 byte array of char to store the result in
+ * @param[in] the number of escape characters passed
+ * @param[in] argc the total number of characters passed
+ * @param[in] chars pointer to array of chars to encode into the array, escapes first
  */
-int make_hid_report_arr(char *, int, int, char *);
+int make_hid_report_arr(char *report, int numescape, int argc, char *chars);

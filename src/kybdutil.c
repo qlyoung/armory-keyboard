@@ -12,6 +12,13 @@
 #include <stdarg.h>
 #include "kybdutil.h"
 
+// some error codes
+#define ERR_BAD_ESCAPE_CNT "Bad escape count"
+#define ERR_BAD_CHAR_CNT "Bad character count"
+#define ERR_UNKNOWN_ESCAPE "Unknown escape character"
+#define ERR_UNKNOWN_CHAR "Keycode unknown for character"
+
+
 /**
  * Keycode struct. Holds a character, its HID Usage ID, and
  * a bit field that indicates what bits of the modifier byte
@@ -124,6 +131,14 @@ static struct key_t keys_escape[] = {
   {.k = 0x0,      .c = 0x00, .mod=0x00}
 };
 
+/**
+ * Searches an array of key_t[] looking for the key_t associated with
+ * the given character.
+ * @param[in] keychar the character to search for
+ * @param[in] table the key_t array to search in
+ * @return constant pointer to the associated key_t, or NULL if it was
+ * not found
+ */
 const struct key_t *find_key(char keychar, struct key_t table[]) {
   // linear search; could be changed to bsearch with ordered keycodes
   for (int i = 0; table[i].k != 0; i++) {
@@ -136,11 +151,11 @@ const struct key_t *find_key(char keychar, struct key_t table[]) {
 int make_hid_report(char *report, int numescape, int argc, ...) {
   // sanity checks
   if (argc < 1) {
-    fprintf(stderr, "[!] Insane character count: %d\n", argc);
+    fprintf(stderr, "[!] "ERR_BAD_CHAR_CNT": %d\n", argc);
     return -1;
   }
   if (numescape < 0) {
-    fprintf(stderr, "[!] Insane escape count: %d\n", numescape);
+    fprintf(stderr, "[!] "ERR_BAD_ESCAPE_CNT": %d\n", numescape);
     return -1;
   }
 
@@ -161,21 +176,19 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
         report[0] |= match->mod;
       }
       else {
-        fprintf(stderr, "[!] Unknown escape character: %c\n", input);
+        fprintf(stderr, ERR_UNKNOWN_ESCAPE": %c\n", input);
         return -1;
       }
     }
     else if (isalpha(input)) {
       // see HID Usage Tables page 0x07 for this conversion
       report[index] = tolower(input) - ('a' - 4);
-      index++;
       // if uppercase character, set l+r shift in modifier
       if (isupper(input))
         report[0] = 0x22;
     }
     else if (isdigit(input)) {
       report[index] = keys_num[input - '0'].c;
-      index++;
     }
     else if (ispunct(input)) {
       const struct key_t * match = find_key(input, keys_symbol);
@@ -184,18 +197,11 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
         report[0] |= match->mod;
       }
       else {
-        fprintf(stderr, "[!] Unknown escape character: %c\n", input);
+        fprintf(stderr, "[!] "ERR_UNKNOWN_CHAR": %c\n", input);
         return -1;
       }
     }
-
-    // if the first data byte is unset and the modifier is also unset
-    // then this report is not valid and we should return
-    if (report[2] == 0 && report[0] == 0) {
-      fprintf(stderr, "[!] No keycode mapping: >%c<\n", input);
-      return -1;
-    }
-
+    index++;
   }
   va_end(chars);
 
