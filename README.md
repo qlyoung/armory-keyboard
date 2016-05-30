@@ -13,7 +13,7 @@ $ git clone https://github.com/qlyoung/armory-keyboard.git
 $ cd armory-keyboard
 $ make
 ```
-
+The resultant binary is located in `build/`.
 You must build on the USBArmory or cross-compile.
 
 Usage
