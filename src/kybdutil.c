@@ -135,7 +135,7 @@ static struct key_t keys_escape[] = {
  */
 const struct key_t *find_key(char keychar, struct key_t table[]) {
   // linear search; could be changed to bsearch with ordered keycodes
-  for (int i = 0; table[i].k != 0; i++) {
+  for (int i = 0; table[i].k != 0x00; i++) {
     if (keychar == table[i].k)
       return &table[i];
   }
@@ -158,24 +158,24 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
     if (ic < numescape) {
       const struct key_t * match = find_key(input, keys_escape);
       if (match == NULL) return -1;
-      report[index] = match->c;
+      if (match->c != 0x00)
+        report[index++] = match->c;
       report[0] |= match->mod;
     }
     else if (isalpha(input)) {
-      report[index] = tolower(input) - ('a' - 4);
+      report[index++] = tolower(input) - ('a' - 4);
       if (isupper(input))
         report[0] = 0x22;
     }
     else if (isdigit(input)) {
-      report[index] = keys_num[input - '0'].c;
+      report[index++] = keys_num[input - '0'].c;
     }
     else if (ispunct(input)) {
       const struct key_t * match = find_key(input, keys_symbol);
       if (match == NULL) return -1;
-      report[index] = match->c;
+      report[index++] = match->c;
       report[0] |= match->mod;
     }
-    index++;
   }
   va_end(chars);
 
