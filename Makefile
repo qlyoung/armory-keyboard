@@ -1,12 +1,21 @@
 CC=gcc
 CFLAGS=-Wall -std=gnu11 -g
 
-sourcedir = src
-builddir  = build
+sourcedir   = src
+testdir     = tests
+builddir    = build
+includedir  = include
 
 type: $(sourcedir)/*
-	$(CC) $(CFLAGS) -o $(builddir)/$@ $^
+	$(CC) $(CFLAGS) -I $(includedir) -o $(builddir)/$@ $^
 	rm -f *.o
 
+test: $(testdir)/* $(sourcedir)/*
+	@$(CC) $(CFLAGS) -I $(includedir) -c $(testdir)/*.c
+	@$(CC) $(CFLAGS) -I $(includedir) -c $(sourcedir)/kybd*.c
+	@$(CC) $(CFLAGS) -o $(builddir)/$@ ./*.o
+	@rm -rf *.o
+	./$(builddir)/test
+
 clean:
-	rm -f *.o $(builddir)/type
+	rm -f *.o $(builddir)/type $(builddir)/test
