@@ -145,7 +145,6 @@ const struct key_t *find_key(char keychar, struct key_t table[]) {
 int make_hid_report(char *report, int numescape, int argc, ...) {
   va_list chars;
   va_start(chars, argc);
-  printf("ayylmao\n");
 
   int index = 2;
 
