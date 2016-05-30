@@ -3,12 +3,14 @@
 #include <ctype.h>
 #include "kybdutil.h"
 
-char* report;
+char *report;
+char *nullChar;
 char oneChar;
 
 void setUp() {
   report = calloc((size_t) 8, (size_t) 1);
   oneChar = 'a';
+  nullChar = NULL;
 }
 
 void tearDown() {
@@ -17,10 +19,10 @@ void tearDown() {
 
 /** basic parameter testing*/
 void test_make_hid_report_nullargs_fails() {
-  int result = make_hid_report(report, 0, 1, NULL);
+  int result = make_hid_report(report, 0, 1, nullChar);
   TEST_ASSERT_EQUAL_INT(-1, result);
 
-  result = make_hid_report(report, 1, 1, NULL);
+  result = make_hid_report(report, 1, 1, nullChar);
   TEST_ASSERT_EQUAL_INT(-1, result);
 }
 

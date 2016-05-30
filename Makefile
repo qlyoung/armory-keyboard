@@ -12,7 +12,7 @@ type: $(sourcedir)/*
 
 test: $(testdir)/* $(sourcedir)/*
 	@$(CC) $(CFLAGS) -I $(includedir) -c $(testdir)/*.c
-	@$(CC) $(CFLAGS) -I $(includedir) -c $(sourcedir)/kybd*.c
+	@$(CC) $(CFLAGS) -I $(includedir) -DTESTING -c $(sourcedir)/*.c
 	@$(CC) $(CFLAGS) -o $(builddir)/$@ ./*.o
 	@rm -rf *.o
 	./$(builddir)/test

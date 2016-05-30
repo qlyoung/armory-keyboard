@@ -145,6 +145,7 @@ const struct key_t *find_key(char keychar, struct key_t table[]) {
 int make_hid_report(char *report, int numescape, int argc, ...) {
   va_list chars;
   va_start(chars, argc);
+  printf("ayylmao\n");
 
   int index = 2;
 
@@ -180,14 +181,17 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
   va_end(chars);
 
   // assert report is not empty
-  assert(report[2] != 0x00 || report[0] != 0x00);
+  // assert(report[2] != 0x00 || report[0] != 0x00);
   // assert reserved byte is empty
-  assert(report[1] == 0x00);
+  // assert(report[1] == 0x00);
 
   return 0;
 }
 
-int make_hid_report_arr(char *report, int numescape, int argc, char* chars) {
+int make_hid_report_arr(char *report, int numescape, int argc, char *chars) {
+  // nullcheck
+  if (chars == NULL) return -1;
+
   // i'm so sorry
   switch (argc) {
     case 1:

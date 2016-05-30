@@ -262,6 +262,8 @@ void parse(FILE* scriptfile, FILE* file) {
   }
 }
 
+
+#ifndef TESTING
 int main(int argc, char** argv) {
   // sanity check on argument count
   if (argc < 2)
@@ -288,3 +290,4 @@ int main(int argc, char** argv) {
 
   return EXIT_SUCCESS;
 }
+#endif // TESTING
