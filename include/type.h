@@ -7,6 +7,7 @@
 
 #define ERR_USAGE "usage: ./type <script> <layout> [/dev/hidgX]"
 #define ERR_INVALID_TOKEN "Invalid token, skipping line"
+#define ERR_NO_MAPPING "No mapping for character, skipping"
 #define ERR_CANNOT_WRITE_HID "Error writing HID report"
 #define ERR_CANNOT_OPEN_LAYOUTFILE "Error opening layout file"
 #define ERR_CANNOT_OPEN_OUTFILE "Error opening output file"

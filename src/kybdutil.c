@@ -51,25 +51,25 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
   return 0;
 }
 
-int make_hid_report_arr(char *report, int numescape, int argc, char *chars) {
+int make_hid_report_arr(char *report, int numescape, int argc, uint32_t *codepoints) {
   // nullcheck
-  if (chars == NULL) return -1;
+  if (codepoints == NULL) return -1;
 
   // i'm so sorry
   switch (argc) {
     case 1:
-      return make_hid_report(report, numescape, argc, chars[0]);
+      return make_hid_report(report, numescape, argc, codepoints[0]);
     case 2:
-      return make_hid_report(report, numescape, argc, chars[0], chars[1]);
+      return make_hid_report(report, numescape, argc, codepoints[0], codepoints[1]);
     case 3:
-      return make_hid_report(report, numescape, argc, chars[0], chars[1], chars[2]);
+      return make_hid_report(report, numescape, argc, codepoints[0], codepoints[1], codepoints[2]);
     case 4:
-      return make_hid_report(report, numescape, argc, chars[0], chars[1], chars[2], chars[3]);
+      return make_hid_report(report, numescape, argc, codepoints[0], codepoints[1], codepoints[2], codepoints[3]);
     case 5:
-      return make_hid_report(report, numescape, argc, chars[0], chars[1], chars[2], chars[3], chars[4]);
+      return make_hid_report(report, numescape, argc, codepoints[0], codepoints[1], codepoints[2], codepoints[3], codepoints[4]);
     case 6:
     default:
-      return make_hid_report(report, numescape, argc, chars[0], chars[1], chars[2], chars[3], chars[4], chars[5]);
+      return make_hid_report(report, numescape, argc, codepoints[0], codepoints[1], codepoints[2], codepoints[3], codepoints[4], codepoints[5]);
   }
 }
 

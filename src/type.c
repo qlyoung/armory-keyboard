@@ -165,20 +165,24 @@ void parse(FILE* scriptfile, FILE* file) {
     // echo script line if it's not empty
     if (strlen(line) > 1)
       printf("%s", line);
+
     // get command
     command = strtok(line, " \n");
     // if the line is blank or a comment, skip it
     if (command == NULL || !strcmp(command, "REM") || !strcmp(command, "#")) continue;
+
     // clear HID report
     memset(report, 0x0, sizeof(report));
 
+    // handle default delay command
     if (!strcmp(command, "DEFAULT_DELAY") || !strcmp(command, "DEFAULTDELAY")) {
       if (sscanf(strtok(NULL, " "), "%ld", &defdelay) == 0)
         err(ERR_INVALID_TOKEN, false, false);
         continue;
     }
 
-    // if cascade for control commands
+    // if-cascade for control commands
+
     if (!strcmp(command, "DELAY")) {
       // read delay
       int delay = 0;
@@ -197,43 +201,63 @@ void parse(FILE* scriptfile, FILE* file) {
         err(ERR_INVALID_TOKEN, false, false);
         continue;
       }
+
       // send each character one by one
-      for (int i = 0; i < strlen(str); i++) {
-        // convert character to HID report
-        make_hid_report(report, 0, 1, str[i]);
+      int index = 0;
+      while (index < strlen(str)) {
+
+        uint32_t codepoint = getUTF8Char(str, &index);
+
+        if (make_hid_report(report, 0, 1, codepoint)) {
+          char prefix[] = "No mapping for character:";
+          char* message = malloc(strlen(prefix) + 16);
+          sprintf(message, "%s %c (U+%04x)", prefix, codepoint, codepoint);
+          err(message, false, false);
+          free(message);
+          continue;
+        }
+
         write_report(report, file);
       }
     }
     // because duckyscript was created by skids
     else if (!strcmp(command, "SIMUL")) {
       // parse up to six arguments to be sent simultaneously
-      char simuls[6];
+      uint32_t simuls[6];
       char *param = NULL;
       bool escapes_done = false, invalid = false;
       int i = 0, num_escapes = 0;
+
       for (; i < sizeof(simuls); i++) {
         // get next space or newline-delimited argument
         param = strtok(NULL, " \n");
-        // if there are no more tokens, die
+        // if there are no more tokens, we're done
         if (param == NULL) break;
-        // if it's a single char, just pass it along
-        if (strlen(param) == 1) {
-          simuls[i] = *param;
+
+        // get next UTF-8 char
+        int index = 0;
+        uint32_t nextCodepoint = getUTF8Char(param, &index);
+
+        // if the token is a single character, save and move on
+        if (index == strlen(param)) {
+          simuls[i] = nextCodepoint;
           escapes_done = true;
         }
+        // if it's not a single character, it should be an escape token
         else {
-          // if escapes are already done, error
+          // if escapes are already done, it's an error (escapes come first)
           if (escapes_done) {
             invalid = true;
             break;
           };
-          // try to map it as a syntax element
+          // try to map it as an escape token
           char esc = map_escape(param);
+          // if there's no mapping, it's an error
           if (esc == 0) {
             invalid = true;
             break;
           }
-          // write special
+          // add to report and move on
           simuls[i] = esc;
           num_escapes++;
         }
@@ -248,6 +272,8 @@ void parse(FILE* scriptfile, FILE* file) {
       write_report(report, file);
     }
     // if it wasn't anything else, try to map token to an escape
+    // no need to mess with Unicode here because all syntax tokens
+    // are pure ASCII
     else {
       char esc = map_escape(command);
       // if it's not a valid escape, print err and skip line

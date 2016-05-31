@@ -111,6 +111,6 @@ int make_hid_report(char *report, int numescape, int argc, ...);
  * @return 0 on success, -1 if a character with no known mapping is encountered, or if
  * NULL is passed as the last parameter
  */
-int make_hid_report_arr(char *report, int numescape, int argc, char *chars);
+int make_hid_report_arr(char *report, int numescape, int argc, uint32_t *codepoints);
 
 #endif
