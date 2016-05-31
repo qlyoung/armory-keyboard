@@ -9,6 +9,8 @@
 #include <errno.h>
 
 #include "kybdutil.h"
+#include "layouts.h"
+#include "unicode.h"
 
 /**
  * Displays error message and exits if fatal is true.
@@ -266,7 +268,7 @@ void parse(FILE* scriptfile, FILE* file) {
 #ifndef TESTING
 int main(int argc, char** argv) {
   // sanity check on argument count
-  if (argc < 2)
+  if (argc < 3)
     err(ERR_USAGE, false, true);
 
   // open script file
@@ -274,12 +276,23 @@ int main(int argc, char** argv) {
   if (infile == NULL)
     err(ERR_CANNOT_OPEN_INFILE, true, true);
 
+  // open layout file
+  FILE* layoutfile = fopen(argv[2], "rb");
+  if (layoutfile == NULL)
+    err(ERR_CANNOT_OPEN_INFILE, true, true);
+
+  // load layout file
+  layout_t *layout = load_layout(layoutfile);
+  if (layout == NULL)
+    err(ERR_BAD_LAYOUTFILE, false, true);
+  set_layout(layout);
+
   // device file that we will write HID reports to
   char* dev_filename = DEFAULT_HID_DEVICE;
 
   // use the user's device file if they gave us one
-  if (argc > 2)
-      dev_filename = argv[2];
+  if (argc > 3)
+      dev_filename = argv[3];
 
   // open device file
   FILE *devfile = fopen(dev_filename, "a");

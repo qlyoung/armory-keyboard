@@ -1,47 +1,17 @@
 /**
- * English #define's for keycode escape characters and
- * prototypes for HID keyboard utility functions.
+ * Prototypes for HID keyboard utility functions.
  */
+#ifndef KYBDUTIL_H
+#define KYBDUTIL_H
 
-// table of escape codes
-#define ALT         'a'
-#define BACKSPACE   'b'
-#define CONTROL     'c'
-#define DELETE      'd'
-#define ESCAPE      'e'
-#define END         'f'
-#define GUI         'g'
-#define HOME        'h'
-#define INSERT      'i'
-#define DARROW      'j'
-#define UARROW      'k'
-#define LARROW      'l'
-#define RARROW      'm'
-#define ENTER       'n'
-#define SPACE       'o'
-#define PRNTSCRN    'p'
-#define SCRLLCK     'q'
-#define MENU        'r'
-#define SHIFT       's'
-#define TAB         't'
-#define CAPSLOCK    'u'
-#define PAUSE       'v'
-#define NUMLOCK     'w'
-#define PAGEDOWN    'x'
-#define PAGEUP      'y'
-#define CLEAR       'z'
-#define F1          '1'
-#define F2          '2'
-#define F3          '3'
-#define F4          '4'
-#define F5          '5'
-#define F6          '6'
-#define F7          '7'
-#define F8          '8'
-#define F9          '9'
-#define F10         '0'
-#define F11         '!'
-#define F12         '@'
+#include "layouts.h"
+
+/**
+ * Set the layout to use. Must be called before
+ * any other function in this unit is called.
+ * @param[in] lo pointer to layout to use
+ */
+void set_layout(layout_t *lo);
 
 /**
  * Fills out an 8-byte array with a USB HID keyboard report.
@@ -142,3 +112,5 @@ int make_hid_report(char *report, int numescape, int argc, ...);
  * NULL is passed as the last parameter
  */
 int make_hid_report_arr(char *report, int numescape, int argc, char *chars);
+
+#endif

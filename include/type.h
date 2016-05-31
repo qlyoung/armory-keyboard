@@ -1,12 +1,17 @@
+#ifndef TYPE_H
+#define TYPE_H
+
 #include <stdio.h>
 
 #define DEFAULT_HID_DEVICE "/dev/hidg0"
 
-#define ERR_USAGE "usage: ./type <script> [/dev/hidgX]"
+#define ERR_USAGE "usage: ./type <script> <layout> [/dev/hidgX]"
 #define ERR_INVALID_TOKEN "Invalid token, skipping line"
 #define ERR_CANNOT_WRITE_HID "Error writing HID report"
+#define ERR_CANNOT_OPEN_LAYOUTFILE "Error opening layout file"
 #define ERR_CANNOT_OPEN_OUTFILE "Error opening output file"
 #define ERR_CANNOT_OPEN_INFILE "Error opening script file"
+#define ERR_BAD_LAYOUTFILE "Bad layout file"
 
 /**
  * Writes the HID report follows by an empty report to the
@@ -30,3 +35,5 @@ char map_escape(char *token);
  * @param[in] file file stream to write generated reports to
  */
 void parse(FILE *scriptfile, FILE *file);
+
+#endif
