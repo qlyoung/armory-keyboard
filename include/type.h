@@ -2,9 +2,12 @@
 #define TYPE_H
 
 #include <stdio.h>
+#include <stdint.h>
 
+/** The default output device */
 #define DEFAULT_HID_DEVICE "/dev/hidg0"
 
+/** Error codes */
 #define ERR_USAGE "usage: ./type <script> <layout> [/dev/hidgX]"
 #define ERR_INVALID_TOKEN "Invalid token, skipping line"
 #define ERR_NO_MAPPING "No mapping for character, skipping"
@@ -15,26 +18,33 @@
 #define ERR_BAD_LAYOUTFILE "Bad layout file"
 
 /**
- * Writes the HID report follows by an empty report to the
+ * Writes the HID report followed by an empty report to the
  * specified file.
+ *
  * @param[in] report the 8-byte HID report
  * @param[in] file file stream to write report to
  */
 void write_report(char *report, FILE *file);
 
 /**
- * Maps ArmoryDuckyScript escape token to corresponding escape character
- * @param[in] token pointer to null-terminated token
+ * Maps ArmoryDuckyScript escape token to the corresponding escape
+ * value. The returned value can subsequently be passed as an escape
+ * codepoint to make_hid_report() to generate unprintable keycodes
+ * such as modifiers and toggle keys.
+ *
+ * @param[in] token pointer to null-terminated string specifying
+ *  the escape token to map
  * @return the escape character or 0x00 if no mapping was found
  */
-char map_escape(char *token);
+uint32_t map_escape(const char *token);
 
 /**
  * Parses and executes an ArmoryDuckyScript, writing generated
  * HID reports to the file descriptor specified.
+ *
  * @param[in] scriptfile FILE pointer to script file
- * @param[in] file file stream to write generated reports to
+ * @param[in] outfile file stream to write generated reports to
  */
-void parse(FILE *scriptfile, FILE *file);
+void parse(FILE *scriptfile, FILE *outfile);
 
 #endif

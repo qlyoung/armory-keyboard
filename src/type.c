@@ -1,5 +1,4 @@
 #include "type.h"
-
 #include <fcntl.h>
 #include <string.h>
 #include <stdbool.h>
@@ -7,14 +6,16 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
-
 #include "kybdutil.h"
 #include "layouts.h"
 #include "unicode.h"
 
 /**
- * Displays error message and exits if fatal is true.
+ * Displays error message and optionally exits with
+ * EXIT_FAILURE.
+ *
  * @param message null-terminated error message
+ * @param perr whether to use perror() to print the message
  * @param fatal whether this error should kill the program
  */
 void err(const char *message, bool perr, bool fatal) {
@@ -26,12 +27,13 @@ void err(const char *message, bool perr, bool fatal) {
   }
 
   if (fatal)
-    exit(1);
+    exit(EXIT_FAILURE);
 }
 
 /**
- * Sleeps for the specified number of milliseconds.
- * @param milliseconds
+ * Sleeps in millisecond increments.
+ *
+ * @param milliseconds number of milliseconds to sleep for.
  */
 void millisleep(long milliseconds) {
   // convert millis to seconds and nanos
@@ -57,7 +59,7 @@ void write_report(char* report, FILE* file) {
   fflush(file);
 }
 
-char map_escape(char* token) {
+uint32_t map_escape(const char *token) {
   if (!strcmp(token, "ALT"))
     return ALT;
   else if (!strcmp(token, "BACKSPACE"))
@@ -151,52 +153,46 @@ char map_escape(char* token) {
 long defdelay = 0;
 
 /**
- * Parses and executes an ArmoryDuckyScript.
+ * Parses an ArmoryDuckyScript, generates HID reports
+ * accordingly and writes them to the output file.
+ *
  * @param scriptfile FILE pointer to script file
- * @param fd file descriptor for /dev/hidgX device
+ * @param outfile FILE pointer to write generated reports to.
  */
 void parse(FILE* scriptfile, FILE* file) {
   char report[8];
   char line[501];
   char *command;
 
-  // loop over line
+  // loop over lines in file
   while (fgets(line, sizeof(line), scriptfile)) {
-    // echo script line if it's not empty
+
     if (strlen(line) > 1)
       printf("%s", line);
 
-    // get command
     command = strtok(line, " \n");
-    // if the line is blank or a comment, skip it
     if (command == NULL || !strcmp(command, "REM") || !strcmp(command, "#")) continue;
 
     // clear HID report
     memset(report, 0x0, sizeof(report));
 
-    // handle default delay command
+
     if (!strcmp(command, "DEFAULT_DELAY") || !strcmp(command, "DEFAULTDELAY")) {
       if (sscanf(strtok(NULL, " "), "%ld", &defdelay) == 0)
         err(ERR_INVALID_TOKEN, false, false);
         continue;
     }
-
-    // if-cascade for control commands
-
     if (!strcmp(command, "DELAY")) {
-      // read delay
       int delay = 0;
       if (sscanf(strtok(NULL, " \n"), "%d", &delay) == 0) {
         err(ERR_INVALID_TOKEN, false, false);
         continue;
       }
-      // execute delay
+
       millisleep(delay);
     }
     else if (!strcmp(command, "STRING")) {
-      // read string param
       char *str = strtok(NULL, "\n");
-      // if no string, err
       if (str == NULL) {
         err(ERR_INVALID_TOKEN, false, false);
         continue;
@@ -206,11 +202,12 @@ void parse(FILE* scriptfile, FILE* file) {
       int index = 0;
       while (index < strlen(str)) {
 
-        uint32_t codepoint = getUTF8Char(str, &index);
+        // read next UTF-8 char
+        uint32_t codepoint = getCodepoint(str, &index);
 
         if (make_hid_report(report, 0, 1, codepoint)) {
-          char prefix[] = "No mapping for character:";
-          char* message = malloc(strlen(prefix) + 16);
+          char *prefix  = "No mapping for character:";
+          char *message = malloc(strlen(prefix) + 16);
           sprintf(message, "%s %c (U+%04x)", prefix, codepoint, codepoint);
           err(message, false, false);
           free(message);
@@ -220,7 +217,6 @@ void parse(FILE* scriptfile, FILE* file) {
         write_report(report, file);
       }
     }
-    // because duckyscript was created by skids
     else if (!strcmp(command, "SIMUL")) {
       // parse up to six arguments to be sent simultaneously
       uint32_t simuls[6];
@@ -229,14 +225,11 @@ void parse(FILE* scriptfile, FILE* file) {
       int i = 0, num_escapes = 0;
 
       for (; i < sizeof(simuls); i++) {
-        // get next space or newline-delimited argument
         param = strtok(NULL, " \n");
-        // if there are no more tokens, we're done
         if (param == NULL) break;
 
-        // get next UTF-8 char
         int index = 0;
-        uint32_t nextCodepoint = getUTF8Char(param, &index);
+        uint32_t nextCodepoint = getCodepoint(param, &index);
 
         // if the token is a single character, save and move on
         if (index == strlen(param)) {
@@ -245,15 +238,8 @@ void parse(FILE* scriptfile, FILE* file) {
         }
         // if it's not a single character, it should be an escape token
         else {
-          // if escapes are already done, it's an error (escapes come first)
-          if (escapes_done) {
-            invalid = true;
-            break;
-          };
-          // try to map it as an escape token
-          char esc = map_escape(param);
-          // if there's no mapping, it's an error
-          if (esc == 0) {
+          char esc;
+          if (escapes_done || (esc = map_escape(param)) == 0) {
             invalid = true;
             break;
           }
@@ -262,21 +248,19 @@ void parse(FILE* scriptfile, FILE* file) {
           num_escapes++;
         }
       }
-      // if broke loop because of error, skip line
+
+      // skip line if invalid token was encountered
       if (invalid) {
         err(ERR_INVALID_TOKEN, false, false);
         continue;
       }
-      // generate report
+
       make_hid_report_arr(report, num_escapes, i, simuls);
       write_report(report, file);
     }
     // if it wasn't anything else, try to map token to an escape
-    // no need to mess with Unicode here because all syntax tokens
-    // are pure ASCII
     else {
       char esc = map_escape(command);
-      // if it's not a valid escape, print err and skip line
       if (esc == 0) {
         err(ERR_INVALID_TOKEN, false, false);
         continue;
@@ -285,7 +269,6 @@ void parse(FILE* scriptfile, FILE* file) {
       write_report(report, file);
     }
 
-    // sleep for default delay
     millisleep(defdelay);
   }
 }
@@ -296,6 +279,12 @@ int main(int argc, char** argv) {
   // sanity check on argument count
   if (argc < 3)
     err(ERR_USAGE, false, true);
+
+  // open output file
+  char* dev_filename = argc > 3 ? argv[3] : DEFAULT_HID_DEVICE;
+  FILE *devfile = fopen(dev_filename, "a");
+  if (devfile == NULL)
+    err(ERR_CANNOT_OPEN_OUTFILE, true, true);
 
   // open script file
   FILE* infile = fopen(argv[1], "rb");
@@ -313,19 +302,13 @@ int main(int argc, char** argv) {
     err(ERR_BAD_LAYOUTFILE, false, true);
   set_layout(layout);
 
-  // device file that we will write HID reports to
-  char* dev_filename = DEFAULT_HID_DEVICE;
-
-  // use the user's device file if they gave us one
-  if (argc > 3)
-      dev_filename = argv[3];
-
-  // open device file
-  FILE *devfile = fopen(dev_filename, "a");
-  if (devfile == NULL)
-    err(ERR_CANNOT_OPEN_OUTFILE, true, true);
 
   parse(infile, devfile);
+
+  fclose(layoutfile);
+  fclose(infile);
+  fclose(devfile);
+
 
   return EXIT_SUCCESS;
 }

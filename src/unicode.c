@@ -38,7 +38,7 @@ uint32_t decode(uint32_t* state, uint32_t* codep, uint32_t byte) {
   return *state;
 }
 
-uint32_t getUTF8Char(char *string, int *index) {
+uint32_t getCodepoint(char *string, int *index) {
   uint32_t codepoint = 0;
   uint32_t state = UTF8_ACCEPT;
 
@@ -46,4 +46,3 @@ uint32_t getUTF8Char(char *string, int *index) {
 
   return codepoint;
 }
-

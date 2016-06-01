@@ -1,4 +1,3 @@
-/* Header for layout functions and datatypes */
 #ifndef LAYOUTS_H
 #define LAYOUTS_H
 

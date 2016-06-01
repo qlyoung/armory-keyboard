@@ -8,7 +8,9 @@ char *nullChar;
 char oneChar;
 
 void setUp() {
+  // initialize empty report
   report = calloc((size_t) 8, (size_t) 1);
+  // init some characters
   oneChar = 'a';
   nullChar = NULL;
 }
@@ -16,6 +18,11 @@ void setUp() {
 void tearDown() {
   free(report);
 }
+
+
+
+
+
 
 /** basic parameter testing*/
 void test_make_hid_report_nullargs_fails() {
@@ -27,7 +34,7 @@ void test_make_hid_report_nullargs_fails() {
 }
 
 /** single lowercase char report testing, a-z */
-void test_make_hid_report_one_lowercase_alpha() {
+void test_make_hid_report_one_lowercase_ascii_alpha() {
   for (char c = 'a'; c <= 'z'; c++) {
     make_hid_report(report, 0, 1, c);
     char expected = c - ('a' - 4);
@@ -43,7 +50,7 @@ void test_make_hid_report_one_lowercase_alpha() {
 }
 
 /** single uppercase char report testing, a-z */
-void test_make_hid_report_one_uppercase_alpha() {
+void test_make_hid_report_one_uppercase_ascii_alpha() {
   for (char c = 'A'; c <= 'Z'; c++) {
     make_hid_report(report, 0, 1, c);
     char expected = tolower(c) - ('a' - 4);
@@ -57,6 +64,12 @@ void test_make_hid_report_one_uppercase_alpha() {
     TEST_ASSERT_EQUAL(0x00, report[7]);
   }
 }
+
+void test_make_hid_report_one_unicode_alpha() {
+  TEST_IGNORE();
+}
+
+void test_make_
 
 void test_make_hid_report_one_numeric() {
   TEST_IGNORE();

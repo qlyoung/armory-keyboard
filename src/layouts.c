@@ -68,7 +68,7 @@ layout_t *load_layout(FILE* layoutfile) {
     keycode_t *keydef = malloc(sizeof(keycode_t));
     int index = 0;
     // get the character to produce
-    keydef->ch = getUTF8Char(line, &index);
+    keydef->ch = getCodepoint(line, &index);
     // skip three ascii chars (space, 0, X)
     index += 3;
     // read two hex values
@@ -106,7 +106,6 @@ const keycode_t *map_codepoint(uint32_t codepoint, layout_t *layout, bool escape
         return layout->map[i];
     }
   }
-
 
   return NULL;
 }
