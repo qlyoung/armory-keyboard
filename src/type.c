@@ -276,25 +276,36 @@ void parse(FILE* scriptfile, FILE* file) {
 
 #ifndef TESTING
 int main(int argc, char** argv) {
+  // args
+  FILE *outfile, *infile, *layoutfile;
+
   // sanity check on argument count
   if (argc < 3)
     err(ERR_USAGE, false, true);
 
-  // open output file
-  char* dev_filename = argc > 3 ? argv[3] : DEFAULT_HID_DEVICE;
-  FILE *devfile = fopen(dev_filename, "a");
-  if (devfile == NULL)
-    err(ERR_CANNOT_OPEN_OUTFILE, true, true);
-
-  // open script file
-  FILE* infile = fopen(argv[1], "rb");
-  if (infile == NULL)
-    err(ERR_CANNOT_OPEN_INFILE, true, true);
-
-  // open layout file
-  FILE* layoutfile = fopen(argv[2], "rb");
-  if (layoutfile == NULL)
-    err(ERR_CANNOT_OPEN_INFILE, true, true);
+  int optchar;
+  while((optchar = getopt(argc, argv, "s:l:o:")) != -1) {
+    switch (optchar) {
+      case 's':
+        // open script file
+        infile = fopen(optarg, "rb");
+        if (infile == NULL)
+          err(ERR_CANNOT_OPEN_INFILE, true, true);
+        break;
+      case 'l':
+        // open layout file
+        layoutfile = fopen(optarg, "rb");
+        if (layoutfile == NULL)
+          err(ERR_CANNOT_OPEN_INFILE, true, true);
+        break;
+      case 'o':
+        // open output file
+        outfile = fopen(optarg, "a");
+        if (outfile == NULL)
+          err(ERR_CANNOT_OPEN_OUTFILE, true, true);
+        break;
+    }
+  }
 
   // load layout file
   layout_t *layout = load_layout(layoutfile);
@@ -303,11 +314,11 @@ int main(int argc, char** argv) {
   set_layout(layout);
 
 
-  parse(infile, devfile);
+  parse(infile, outfile);
 
   fclose(layoutfile);
   fclose(infile);
-  fclose(devfile);
+  fclose(outfile);
 
 
   return EXIT_SUCCESS;

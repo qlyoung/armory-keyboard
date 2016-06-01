@@ -33,7 +33,7 @@ Setting up HID Keyboard + CDC Ethernet:
 Using the utility:
 
 ```
-# ./type <script file> <layout file> [output file]
+# ./type -s <script file> -l <layout file> [-o <output file>]
 ```
 
 The interpreter will interpret the script and send the generated HID reports to
