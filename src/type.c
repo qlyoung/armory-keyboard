@@ -19,10 +19,13 @@
  * @param fatal whether this error should kill the program
  */
 void err(const char *message, bool perr, bool fatal) {
-  if (perr)
+  char *prefix = fatal ? "[X]" : "[!]";
+
+  if (perr) {
+    fprintf(stderr, "%s ", prefix);
     perror(message);
+  }
   else {
-    char *prefix = fatal ? "[X]" : "[!]";
     fprintf(stderr, "%s %s\n", prefix, message);
   }
 
@@ -278,6 +281,7 @@ void parse(FILE* scriptfile, FILE* file) {
 int main(int argc, char** argv) {
   // args
   FILE *outfile, *infile, *layoutfile;
+  char *outfile_path = DEFAULT_OUTPUT_FILE;
 
   // sanity check on argument count
   if (argc < 3)
@@ -299,13 +303,17 @@ int main(int argc, char** argv) {
           err(ERR_CANNOT_OPEN_INFILE, true, true);
         break;
       case 'o':
-        // open output file
-        outfile = fopen(optarg, "a");
-        if (outfile == NULL)
-          err(ERR_CANNOT_OPEN_OUTFILE, true, true);
+        // get output file path
+        outfile_path = optarg;
         break;
     }
   }
+
+  // open output file
+  outfile = fopen(outfile_path, "a");
+  if (outfile == NULL)
+    err(ERR_CANNOT_OPEN_OUTFILE, true, true);
+
 
   // load layout file
   layout_t *layout = load_layout(layoutfile);

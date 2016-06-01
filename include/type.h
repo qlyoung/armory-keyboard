@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 /** The default output device */
-#define DEFAULT_HID_DEVICE "/dev/hidg0"
+#define DEFAULT_OUTPUT_FILE "/dev/hidg0"
 
 /** Error codes */
 #define ERR_USAGE "usage: ./type <script> <layout> [/dev/hidgX]"
