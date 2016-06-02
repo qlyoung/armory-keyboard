@@ -91,6 +91,14 @@ layout_t *load_layout(FILE* layoutfile) {
 
 }
 
+void destroy_layout(layout_t *layout) {
+  for (int i = 0; i < layout->size; i++) {
+    free(layout->map[i]);
+  }
+  free(layout->map);
+  free(layout);
+}
+
 const keycode_t *map_codepoint(uint32_t codepoint, layout_t *layout, bool escape) {
   if (escape) {
     // search known escapes

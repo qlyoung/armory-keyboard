@@ -314,16 +314,18 @@ int main(int argc, char** argv) {
   if (outfile == NULL)
     err(ERR_CANNOT_OPEN_OUTFILE, true, true);
 
-
   // load layout file
   layout_t *layout = load_layout(layoutfile);
   if (layout == NULL)
     err(ERR_BAD_LAYOUTFILE, false, true);
-  set_layout(layout);
 
+  // set layout
+  set_layout(layout);
 
   parse(infile, outfile);
 
+  // free resources
+  destroy_layout(layout);
   fclose(layoutfile);
   fclose(infile);
   fclose(outfile);

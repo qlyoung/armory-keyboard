@@ -80,6 +80,12 @@ typedef struct layout {
 layout_t *load_layout(FILE* layoutfile);
 
 /**
+ * Frees all memory used by a layout
+ * @param[in] layout layout to destroy
+ */
+void destroy_layout(layout_t *layout);
+
+/**
  * Finds the keycode mapping for the character
  * specified by the given Unicode codepoint.
  * @param[in] codepoint the codepoint of the character to map
