@@ -205,8 +205,10 @@ void parse(FILE* scriptfile, FILE* file) {
       int index = 0;
       while (index < strlen(str)) {
 
+        uint32_t codepoint = 0;
         // read next UTF-8 char
-        uint32_t codepoint = getCodepoint(str, &index);
+        if(!(codepoint = getCodepoint(str, &index)))
+          err(ERR_BAD_UNICODE, false, true);
 
         if (make_hid_report(report, 0, 1, codepoint)) {
           char *prefix  = "No mapping for character:";

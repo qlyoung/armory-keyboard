@@ -42,7 +42,8 @@ uint32_t getCodepoint(char *string, int *index) {
   uint32_t codepoint = 0;
   uint32_t state = UTF8_ACCEPT;
 
-  while(decode(&state, &codepoint, (unsigned char) string[(*index)++]));
+  while(decode(&state, &codepoint, (unsigned char) string[(*index)++]))
+    if (state == UTF8_REJECT) return 0;
 
   return codepoint;
 }

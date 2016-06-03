@@ -16,6 +16,7 @@
 #define ERR_CANNOT_OPEN_OUTFILE "Error opening output file"
 #define ERR_CANNOT_OPEN_INFILE "Error opening script file"
 #define ERR_BAD_LAYOUTFILE "Bad layout file"
+#define ERR_BAD_UNICODE "Indecipherable UTF-8 byte sequence"
 
 /**
  * Writes the HID report followed by an empty report to the
