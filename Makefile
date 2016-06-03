@@ -15,6 +15,7 @@ test: $(testdir)/* $(sourcedir)/*
 	@$(CC) $(CFLAGS) -I $(includedir) -DTESTING -c $(sourcedir)/*.c
 	@$(CC) $(CFLAGS) -o $(builddir)/$@ ./*.o
 	@rm -rf *.o
+	@cp $(testdir)/test.layout $(builddir)/
 	./$(builddir)/test
 
 clean:
