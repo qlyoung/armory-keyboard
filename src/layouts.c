@@ -52,7 +52,8 @@ static struct Keycode keys_escape[] = {
   {.ch = 0x0,       .id = 0x00, .mod=0x00}
 };
 
-struct Layout *load_layout(FILE* layoutfile) {
+struct Layout *load_layout(FILE *layoutfile) {
+  if (layoutfile == NULL) return NULL;
 
   char line[50];
 
