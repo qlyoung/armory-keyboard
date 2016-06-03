@@ -1,11 +1,16 @@
+/*
+ * Functions for loading, destroying and using
+ * keyboard layouts.
+ */
+
 #include "layouts.h"
 #include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
 #include "unicode.h"
 
-/** Table of key_t for keys with escape characters */
-static struct keycode keys_escape[] = {
+/** Table of keycode for unprintable keys */
+static struct Keycode keys_escape[] = {
   {.ch = ALT,       .id = 0x00, .mod=0x04}, // alt
   {.ch = BACKSPACE, .id = 0x2A, .mod=0x00}, // backspace
   {.ch = CONTROL,   .id = 0x00, .mod=0x01}, // ctrl
@@ -47,16 +52,16 @@ static struct keycode keys_escape[] = {
   {.ch = 0x0,       .id = 0x00, .mod=0x00}
 };
 
-struct layout *load_layout(FILE* layoutfile) {
+struct Layout *load_layout(FILE* layoutfile) {
 
   char line[50];
 
   // start with a table size of 50
   int table_cap = 50;
-  struct layout *layout = malloc(sizeof(struct layout));
+  struct Layout *layout = malloc(sizeof(struct Layout));
   // initialize map with cap
   layout->size = 0;
-  layout->map = malloc(table_cap * sizeof(struct keycode *));
+  layout->map = malloc(table_cap * sizeof(struct Keycode *));
 
   // check if layout file
   fgets(line, sizeof(line), layoutfile);
@@ -65,7 +70,7 @@ struct layout *load_layout(FILE* layoutfile) {
 
   while (fgets(line, sizeof(line), layoutfile)) {
     if (line[0] == '\n') continue;
-    struct keycode *keydef = malloc(sizeof(struct keycode));
+    struct Keycode *keydef = malloc(sizeof(struct Keycode));
     int index = 0;
     // get the character to produce
     keydef->ch = getCodepoint(line, &index);
@@ -83,7 +88,7 @@ struct layout *load_layout(FILE* layoutfile) {
     // resize if necessary
     if (layout->size == table_cap) {
       table_cap *= 2;
-      layout->map = realloc(layout->map, table_cap * sizeof(struct keycode *));
+      layout->map = realloc(layout->map, table_cap * sizeof(struct Keycode *));
     }
   }
 
@@ -91,7 +96,7 @@ struct layout *load_layout(FILE* layoutfile) {
 
 }
 
-void destroy_layout(struct layout *layout) {
+void destroy_layout(struct Layout *layout) {
   for (int i = 0; i < layout->size; i++) {
     free(layout->map[i]);
   }
@@ -99,7 +104,7 @@ void destroy_layout(struct layout *layout) {
   free(layout);
 }
 
-const struct keycode *map_codepoint(uint32_t codepoint, struct layout *layout, bool escape) {
+const struct Keycode *map_codepoint(uint32_t codepoint, struct Layout *layout, bool escape) {
   if (escape) {
     // search known escapes
     for (int i = 0; keys_escape[i].ch != 0x00; i++) {

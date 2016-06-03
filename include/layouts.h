@@ -51,7 +51,7 @@
  * HID Usage ID + modifier bitfield necessary to
  * produce it for a given layout
  */
-struct keycode {
+struct Keycode {
   // Unicode code point for character
   uint32_t ch;
   // character's usage ID
@@ -65,11 +65,11 @@ struct keycode {
  * keycode mappings for all characters that the
  * layout supports
  */
-struct layout {
+struct Layout {
   // number of mappings
   int size;
   // all keycode mappings for layout
-  struct keycode **map;
+  struct Keycode **map;
 };
 
 /**
@@ -78,13 +78,13 @@ struct layout {
  * @param[in] layoutfile layout file opened for reading
  * @return pointer to layout, NULL on error
  */
-struct layout *load_layout(FILE* layoutfile);
+struct Layout *load_layout(FILE* layoutfile);
 
 /**
  * Frees all memory used by a layout
  * @param[in] layout layout to destroy
  */
-void destroy_layout(struct layout *layout);
+void destroy_layout(struct Layout *layout);
 
 /**
  * Finds the keycode mapping for the character specified by
@@ -95,6 +95,6 @@ void destroy_layout(struct layout *layout);
  * @param[in] escape whether the passed codepoint is a predefined escape code
  * @return pointer to the mapping in the layout, or NULL no mapping was found
  */
-const struct keycode *map_codepoint(uint32_t codepoint, struct layout *layout, bool escape);
+const struct Keycode *map_codepoint(uint32_t codepoint, struct Layout *layout, bool escape);
 
 #endif

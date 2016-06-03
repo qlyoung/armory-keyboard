@@ -13,9 +13,9 @@
 #include <stdarg.h>
 #include "kybdutil.h"
 
-struct layout *layout;
+struct Layout *layout;
 
-void set_layout(struct layout *lo) {
+void set_layout(struct Layout *lo) {
   layout = lo;
 }
 
@@ -31,7 +31,7 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
 
     uint32_t input = (uint32_t) va_arg(chars, int);
 
-    const struct keycode *match = map_codepoint(input, layout, ic < numescape);
+    const struct Keycode *match = map_codepoint(input, layout, ic < numescape);
     if (match == NULL) return -1;
     if (match->id != 0x00)
       report[index++] = match->id;
