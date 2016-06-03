@@ -74,6 +74,7 @@ typedef struct layout {
 
 /**
  * Load the layout with the specified name.
+ *
  * @param[in] layoutfile layout file opened for reading
  * @return pointer to layout, NULL on error
  */
@@ -86,8 +87,9 @@ layout_t *load_layout(FILE* layoutfile);
 void destroy_layout(layout_t *layout);
 
 /**
- * Finds the keycode mapping for the character
- * specified by the given Unicode codepoint.
+ * Finds the keycode mapping for the character specified by
+ * the given Unicode codepoint.
+ *
  * @param[in] codepoint the codepoint of the character to map
  * @param[in] layout the layout to look up the mapping in
  * @param[in] escape whether the passed codepoint is a predefined escape code
