@@ -25,9 +25,10 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
 
   int index = 2;
 
-  for (int ic = 0; ic < argc; ic++) {
-    // assert report index is in range
-    assert(index < 7);
+  // encode at maximum 6 characters
+  for (int ic = 0; ic < argc && ic < 6; ic++) {
+    // assert report index is under 8
+    assert(index < 8);
 
     uint32_t input = (uint32_t) va_arg(chars, int);
 
