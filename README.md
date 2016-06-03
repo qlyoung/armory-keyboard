@@ -39,7 +39,7 @@ Using the utility:
 
 The interpreter will interpret the script and send the generated HID reports to
 the specified file. In the typical use case, this will be a HID character
-device such as `/dev/hidg0`. If no device is speficied, the default is
+device such as `/dev/hidg0`. If no device is specified, the default is
 `/dev/hidg0`.
 
 Scripts
