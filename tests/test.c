@@ -108,6 +108,7 @@ void test_make_hid_report_one_escape() {
 
 int main(void) {
   UNITY_BEGIN();
+  RUN_TEST(test_layout_file_loaded);
   RUN_TEST(test_make_hid_report_arr_nullargs_fails);
   RUN_TEST(test_make_hid_report_one_lowercase_ascii_alpha);
   RUN_TEST(test_make_hid_report_one_uppercase_ascii_alpha);

@@ -98,6 +98,8 @@ struct Layout *load_layout(FILE *layoutfile) {
 }
 
 void destroy_layout(struct Layout *layout) {
+  if (layout == NULL) return;
+
   for (int i = 0; i < layout->size; i++) {
     free(layout->map[i]);
   }
@@ -106,6 +108,8 @@ void destroy_layout(struct Layout *layout) {
 }
 
 const struct Keycode *map_codepoint(uint32_t codepoint, struct Layout *layout, bool escape) {
+  if (layout == NULL) return NULL;
+
   if (escape) {
     // search known escapes
     for (int i = 0; keys_escape[i].ch != 0x00; i++) {
