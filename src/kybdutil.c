@@ -31,20 +31,11 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
 
     uint32_t input = (uint32_t) va_arg(chars, int);
 
-    // if processing escapes, search for character in escape table
-    if (ic < numescape) {
-      const struct keycode *match = map_codepoint(input, layout, true);
-      if (match == NULL) return -1;
-      if (match->id != 0x00)
-        report[index++] = match->id;
-      report[0] |= match->mod;
-    }
-    else {
-      const struct keycode *match = map_codepoint(input, layout, false);
-      if (match == NULL) return -1;
+    const struct keycode *match = map_codepoint(input, layout, ic < numescape);
+    if (match == NULL) return -1;
+    if (match->id != 0x00)
       report[index++] = match->id;
-      report[0] |= match->mod;
-    }
+    report[0] |= match->mod;
   }
   va_end(chars);
 
