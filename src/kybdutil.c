@@ -13,9 +13,9 @@
 #include <stdarg.h>
 #include "kybdutil.h"
 
-layout_t *layout;
+struct layout *layout;
 
-void set_layout(layout_t *lo) {
+void set_layout(struct layout *lo) {
   layout = lo;
 }
 
@@ -33,14 +33,14 @@ int make_hid_report(char *report, int numescape, int argc, ...) {
 
     // if processing escapes, search for character in escape table
     if (ic < numescape) {
-      const keycode_t *match = map_codepoint(input, layout, true);
+      const struct keycode *match = map_codepoint(input, layout, true);
       if (match == NULL) return -1;
       if (match->id != 0x00)
         report[index++] = match->id;
       report[0] |= match->mod;
     }
     else {
-      const keycode_t *match = map_codepoint(input, layout, false);
+      const struct keycode *match = map_codepoint(input, layout, false);
       if (match == NULL) return -1;
       report[index++] = match->id;
       report[0] |= match->mod;

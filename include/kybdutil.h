@@ -9,7 +9,7 @@
  *
  * @param[in] lo pointer to layout to use
  */
-void set_layout(layout_t *lo);
+void set_layout(struct layout *lo);
 
 /**
  * Generates and returns an 8-byte USB HID keyboard report.

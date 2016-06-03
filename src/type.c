@@ -315,7 +315,7 @@ int main(int argc, char** argv) {
     err(ERR_CANNOT_OPEN_OUTFILE, true, true);
 
   // load layout file
-  layout_t *layout = load_layout(layoutfile);
+  struct layout *layout = load_layout(layoutfile);
   if (layout == NULL)
     err(ERR_BAD_LAYOUTFILE, false, true);
 
