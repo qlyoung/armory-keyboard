@@ -7,6 +7,7 @@
 #include "unity.h"
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 #include "kybdutil.h"
 #include "layouts.h"
 #include "unicode.h"
@@ -38,7 +39,7 @@ void test_all_fail_when_no_layout_set() {
   uint32_t codepoint = getCodepoint(&a, &index);
 
   set_layout(NULL);
-  
+
   TEST_ASSERT_EQUAL(-1, make_hid_report_arr(report, 0, 1, &codepoint));
   TEST_ASSERT_EQUAL(-1, make_hid_report(report, 0, 1, codepoint));
 }
@@ -54,6 +55,10 @@ void test_make_hid_report_arr_nullargs_fails() {
 void test_make_hid_report_one_char() {
   // test report generation for all codepoints in layout
   for (int i = 0; i < lo->size; i++) {
+    // clear report
+    memset(report, 0x00, (size_t) 8);
+
+    // retrieve expected values
     char id  = lo->map[i]->id;
     char mod = lo->map[i]->mod;
 
