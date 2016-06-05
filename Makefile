@@ -16,7 +16,7 @@ test: $(testdir)/* $(sourcedir)/*
 	@$(CC) $(CFLAGS) -o $(builddir)/$@ ./*.o
 	@rm -rf *.o
 	@cp $(testdir)/test.layout $(builddir)/
-	./$(builddir)/test
+	@cd $(builddir); ./test
 
 clean:
 	rm -f *.o $(builddir)/type $(builddir)/test
