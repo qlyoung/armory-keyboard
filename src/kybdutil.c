@@ -20,6 +20,8 @@ void set_layout(struct Layout *lo) {
 }
 
 int make_hid_report(char *report, int numescape, int argc, ...) {
+  if (layout == NULL) return -1;
+
   va_list chars;
   va_start(chars, argc);
 
