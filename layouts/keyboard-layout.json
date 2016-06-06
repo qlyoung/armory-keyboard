@@ -1,0 +1,238 @@
+[
+  [
+    "Esc\n\n\n\n\n\n0x29",
+    {
+      "x": 1
+    },
+    "F1\n\n\n\n\n\n0x3A",
+    "F2\n\n\n\n\n\n0x3B",
+    "F3\n\n\n\n\n\n0x3C",
+    "F4\n\n\n\n\n\n0x3D",
+    {
+      "x": 0.5
+    },
+    "F5\n\n\n\n\n\n0x3E",
+    "F6\n\n\n\n\n\n0x3F",
+    "F7\n\n\n\n\n\n0x40",
+    "F8\n\n\n\n\n\n0x41",
+    {
+      "x": 0.5
+    },
+    "F9\n\n\n\n\n\n0x42",
+    "F10\n\n\n\n\n\n0x43",
+    "F11\n\n\n\n\n\n0x44",
+    "F12\n\n\n\n\n\n0x45",
+    {
+      "x": 0.25
+    },
+    "PrtSc\n\n\n\n\n\n0x46",
+    "Scroll Lock\n0x47",
+    "Pause\nBreak\n\n\n\n\n0x48"
+  ],
+  [
+    {
+      "y": 0.5
+    },
+    "~\n`\n\n\n\n\n0x35",
+    "!\n1\n\n\n\n\n0x1E",
+    "@\n2\n\n\n\n\n0x1F",
+    "#\n3\n\n\n\n\n0x20",
+    "$\n4\n\n\n\n\n0x21",
+    "%\n5\n\n\n\n\n0x22",
+    "^\n6\n\n\n\n\n0x23",
+    "&\n7\n\n\n\n\n0x24",
+    "*\n8\n\n\n\n\n0x25",
+    "(\n9\n\n\n\n\n0x26",
+    ")\n0\n\n\n\n\n0x27",
+    "_\n-\n\n\n\n\n0x2D",
+    "+\n=\n\n\n\n\n0x2E",
+    {
+      "w": 2
+    },
+    "Backspace\n\n\n\n\n\n0x2A",
+    {
+      "x": 0.25
+    },
+    "Insert\n\n\n\n\n\n0x49",
+    "Home\n\n\n\n\n\n0x4A",
+    "PgUp\n\n\n\n\n\n0x4B",
+    {
+      "x": 0.25
+    },
+    "Num Lock\n0x53",
+    "/\n\n\n\n\n\n0x54",
+    "*\n\n\n\n\n\n0x55",
+    "-\n\n\n\n\n\n0x56"
+  ],
+  [
+    {
+      "w": 1.5
+    },
+    "Tab\n\n\n\n\n\n0x2B",
+    "Q\n\n\n\n\n\n0x14",
+    "W\n\n\n\n\n\n0x1A",
+    "E\n\n\n\n\n\n0x08",
+    "R\n\n\n\n\n\n0x15",
+    "T\n\n\n\n\n\n0x17",
+    "Y\n\n\n\n\n\n0x1C",
+    "U\n\n\n\n\n\n0x18",
+    "I\n\n\n\n\n\n0x0C",
+    "O\n\n\n\n\n\n0x12",
+    "P\n\n\n\n\n\n0x13",
+    "{\n[\n\n\n\n\n0x2F",
+    "}\n]\n\n\n\n\n0x30",
+    {
+      "c": "#ff7a92",
+      "w": 1.5
+    },
+    "|\n\\\n\n\n\n\n0x31",
+    {
+      "x": 0.25,
+      "c": "#cccccc"
+    },
+    "Delete\n\n\n\n\n\n0x4C",
+    "End\n\n\n\n\n\n0x4D",
+    "PgDn\n\n\n\n\n\n0x4E",
+    {
+      "x": 0.25
+    },
+    "7\nHome\n\n\n\n\n0x5F",
+    "8\n↑\n\n\n\n\n0x60",
+    "9\nPgUp\n\n\n\n\n0x61",
+    {
+      "h": 2
+    },
+    "+\n\n\n\n\n\n0x57"
+  ],
+  [
+    {
+      "w": 1.75
+    },
+    "Caps Lock\n\n\n\n\n\n0x39",
+    "A\n\n\n\n\n\n0x04",
+    "S\n\n\n\n\n\n0x16",
+    "D\n\n\n\n\n\n0x07",
+    "F\n\n\n\n\n\n0x09",
+    "G\n\n\n\n\n\n0x0A",
+    "H\n\n\n\n\n\n0x0B",
+    "J\n\n\n\n\n\n0x0D",
+    "K\n\n\n\n\n\n0x0E",
+    "L\n\n\n\n\n\n0x0F",
+    ";\n:\n\n\n\n\n0x33",
+    "\"\n'\n\n\n\n\n0x34",
+    {
+      "c": "#5cb1ff"
+    },
+    "~\n#\n\n\n\n\n0x32",
+    {
+      "c": "#cccccc",
+      "w": 1.2
+    },
+    "Enter\n\n\n\n\n\n0x28",
+    {
+      "x": 3.5500000000000007
+    },
+    "4\n←\n\n\n\n\n0x5C",
+    "5\n\n\n\n\n\n0x5D",
+    "6\n→\n\n\n\n\n0x5E"
+  ],
+  [
+    {
+      "a": 0,
+      "w": 1.25
+    },
+    "Shift\n\n\n\nMod:\n0x02\n0xE1",
+    {
+      "c": "#5cb1ff",
+      "p": "R5",
+      "a": 4
+    },
+    "|\n\\\n\n\n\n\n0x64",
+    {
+      "c": "#cccccc",
+      "p": ""
+    },
+    "Z\n\n\n\n\n\n0x1D",
+    "X\n\n\n\n\n\n0x1B",
+    "C\n\n\n\n\n\n0x06",
+    "V\n\n\n\n\n\n0x19",
+    "B\n\n\n\n\n\n0x05",
+    "N\n\n\n\n\n\n0x11",
+    "M\n\n\n\n\n\n0x10",
+    "<\n,\n\n\n\n\n0x36",
+    ">\n.\n\n\n\n\n0x37",
+    "?\n/\n\n\n\n\n0x38",
+    {
+      "a": 0,
+      "w": 2.75
+    },
+    "Shift\n\n\n\nMod: 0x20\n\n0xE5",
+    {
+      "x": 1.25,
+      "a": 4
+    },
+    "↑\n\n\n\n\n\n0x52",
+    {
+      "x": 1.25
+    },
+    "1\nEnd\n\n\n\n\n0x59",
+    "2\n↓\n\n\n\n\n0x5A",
+    "3\nPgDn\n\n\n\n\n0x5B",
+    {
+      "h": 2
+    },
+    "Enter\n\n\n\n\n\n0x58"
+  ],
+  [
+    {
+      "a": 0,
+      "w": 1.25
+    },
+    "Ctrl\n\n\n\nMod:\n0x01\n0xE0",
+    {
+      "w": 1.25
+    },
+    "Win\n\n⌘\n\nMod:\n0x08\n0xE3",
+    {
+      "w": 1.25
+    },
+    "Alt\n\n\n\nMod:\n0x04\n0xE2",
+    {
+      "a": 4,
+      "w": 6.25
+    },
+    "Space\n\n\n\n\n\n0x2C",
+    {
+      "a": 0,
+      "w": 1.25
+    },
+    "Alt\n\nAltGr\n\nMod:\n0x40\n0xE6",
+    {
+      "w": 1.25
+    },
+    "Win\n\n\n\nMod:\n0x80\n0xE7",
+    {
+      "a": 4,
+      "w": 1.25
+    },
+    "Menu\n\n\n\n\n\n0x76",
+    {
+      "a": 0,
+      "w": 1.25
+    },
+    "Ctrl\n\n\n\nMod:\n0x10\n0xE4",
+    {
+      "x": 0.25,
+      "a": 4
+    },
+    "←\n\n\n\n\n\n0x50",
+    "↓\n\n\n\n\n\n0x51",
+    "→\n\n\n\n\n\n0x49",
+    {
+      "x": 0.25,
+      "w": 2
+    },
+    "0\nIns\n\n\n\n\n0x62",
+    ".\nDel\n\n\n\n\n0x63"
+  ]
+]
