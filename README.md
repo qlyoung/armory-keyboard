@@ -20,7 +20,7 @@ or cross-compile.
 Usage
 -----
 First, setup your USBArmory to emulate a USB HID keyboard, either
-manually through ConfigFS or by exeuting the provided shell script `hid-ecm.sh`
+manually through ConfigFS or by executing the provided shell script `hid-ecm.sh`
 (written by Collin Mulliner). The script expects to be running on the Debian
 Jessie base image provided by Inverse Path, but should be easily adaptable to
 other images.
