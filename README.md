@@ -95,7 +95,7 @@ wiki for further documentation on syntax.
 
 Layouts
 -------
-Support for Unicode and arbitrary kyeboard layouts was added in [c0e032c](https://github.com/qlyoung/armory-keyboard/commit/c0e032cd852b6b31bd2638d798e727915d035cdc). Layout files may be specified with the `-l` option. The format of a layout file is as follows:
+Support for Unicode and arbitrary keyboard layouts was added in [c0e032c](https://github.com/qlyoung/armory-keyboard/commit/c0e032cd852b6b31bd2638d798e727915d035cdc). Layout files may be specified with the `-l` option. The format of a layout file is as follows:
 
 ```
 -*- layout: <layout name> -*-
