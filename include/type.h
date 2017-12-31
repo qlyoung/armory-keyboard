@@ -8,7 +8,7 @@
 #define DEFAULT_OUTPUT_FILE "/dev/hidg0"
 
 /** Error codes */
-#define ERR_USAGE "usage: ./type <script> <layout> [/dev/hidgX]"
+#define ERR_USAGE "usage: ./type -s <script> -l <layout> [-o /dev/hidgX]"
 #define ERR_INVALID_TOKEN "Invalid token, skipping line"
 #define ERR_NO_MAPPING "No mapping for character, skipping"
 #define ERR_CANNOT_WRITE_HID "Error writing HID report"
