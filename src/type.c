@@ -51,15 +51,11 @@ void write_report(char* report, FILE* file) {
   if (fwrite(report, (size_t) 1, HID_REPORT_SIZE, file) != HID_REPORT_SIZE)
     err(ERR_CANNOT_WRITE_HID, false, true);
 
-  fflush(file);
-
   // send empty key
   memset(report, 0x0, 8);
 
   if (fwrite(report, (size_t) 1, HID_REPORT_SIZE, file) != HID_REPORT_SIZE)
     err(ERR_CANNOT_WRITE_HID, false, true);
-
-  fflush(file);
 }
 
 uint32_t map_escape(const char *token) {
@@ -316,6 +312,9 @@ int main(int argc, char** argv) {
   outfile = fopen(outfile_path, "a");
   if (outfile == NULL)
     err(ERR_CANNOT_OPEN_OUTFILE, true, true);
+
+  // disable buffering
+  setbuf(outfile, NULL);
 
   // load layout file
   struct Layout *layout = load_layout(layoutfile);
