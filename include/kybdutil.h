@@ -104,4 +104,10 @@ int make_hid_report(char *report, int numescape, int argc, ...);
  */
 int make_hid_report_arr(char *report, int numescape, int argc, uint32_t *codepoints);
 
+/**
+ * Define HID report length.
+ */
+#define HID_REPORT_SIZE 8
+
+
 #endif

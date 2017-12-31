@@ -48,7 +48,7 @@ void millisleep(long milliseconds) {
 
 void write_report(char* report, FILE* file) {
   // send key
-  if (fwrite(report, (size_t) 1, sizeof(report), file) != sizeof(report))
+  if (fwrite(report, (size_t) 1, HID_REPORT_SIZE, file) != HID_REPORT_SIZE)
     err(ERR_CANNOT_WRITE_HID, false, true);
 
   fflush(file);
@@ -56,7 +56,7 @@ void write_report(char* report, FILE* file) {
   // send empty key
   memset(report, 0x0, 8);
 
-  if (fwrite(report, (size_t) 1, sizeof(report), file) != sizeof(report))
+  if (fwrite(report, (size_t) 1, HID_REPORT_SIZE, file) != HID_REPORT_SIZE)
     err(ERR_CANNOT_WRITE_HID, false, true);
 
   fflush(file);
