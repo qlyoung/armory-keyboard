@@ -181,9 +181,10 @@ void parse(FILE* scriptfile, FILE* file) {
 
 
     if (!strcmp(command, "DEFAULT_DELAY") || !strcmp(command, "DEFAULTDELAY")) {
-      if (sscanf(strtok(NULL, " "), "%ld", &defdelay) == 0)
+      if (sscanf(strtok(NULL, " "), "%ld", &defdelay) == 0) {
         err(ERR_INVALID_TOKEN, false, false);
-        continue;
+      }
+      continue;
     }
     if (!strcmp(command, "DELAY")) {
       int delay = 0;
