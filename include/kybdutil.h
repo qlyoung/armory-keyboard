@@ -98,11 +98,13 @@ int make_hid_report(char *report, int numescape, int argc, ...);
  * @param[out] report pointer to 8 byte array of char to store the result in
  * @param[in] the number of escape characters passed
  * @param[in] argc the total number of characters passed
- * @param[in] chars pointer to array of chars to encode into the array, escapes first
- * @return 0 on success, -1 if a character with no known mapping is encountered, or if
- * NULL is passed as the last parameter
+ * @param[in] chars pointer to array of chars to encode into the array, escapes
+ * first
+ * @return 0 on success, -1 if a character with no known mapping is encountered,
+ * or if NULL is passed as the last parameter
  */
-int make_hid_report_arr(char *report, int numescape, int argc, uint32_t *codepoints);
+int make_hid_report_arr(char *report, int numescape, int argc,
+			uint32_t *codepoints);
 
 /**
  * Define HID report length.

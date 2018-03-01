@@ -1,8 +1,8 @@
 #ifndef TYPE_H
 #define TYPE_H
 
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 /** The default output device */
 #define DEFAULT_OUTPUT_FILE "/dev/hidg0"

@@ -4,12 +4,14 @@
  */
 
 #include "layouts.h"
-#include <stdlib.h>
-#include <fcntl.h>
-#include <string.h>
 #include "unicode.h"
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
 
-/** Table of keycode for unprintable keys */
+/* clang-format off */
+
+/* Table of keycode for unprintable keys */
 static struct Keycode keys_escape[] = {
   {.ch = ALT,       .id = 0x00, .mod=0x04}, // alt
   {.ch = BACKSPACE, .id = 0x2A, .mod=0x00}, // backspace
@@ -51,79 +53,88 @@ static struct Keycode keys_escape[] = {
   {.ch = F12,       .id = 0x45, .mod=0x00}, // F12
   {.ch = 0x0,       .id = 0x00, .mod=0x00}
 };
+/* clang-format on */
 
-struct Layout *load_layout(FILE *layoutfile) {
-  if (layoutfile == NULL) return NULL;
+struct Layout *load_layout(FILE *layoutfile)
+{
+	if (layoutfile == NULL)
+		return NULL;
 
-  char line[50];
+	char line[50];
 
-  // start with a table size of 50
-  int table_cap = 50;
-  struct Layout *layout = malloc(sizeof(struct Layout));
-  // initialize map with cap
-  layout->size = 0;
-  layout->map = malloc(table_cap * sizeof(struct Keycode *));
+	// start with a table size of 50
+	int table_cap = 50;
+	struct Layout *layout = malloc(sizeof(struct Layout));
+	// initialize map with cap
+	layout->size = 0;
+	layout->map = malloc(table_cap * sizeof(struct Keycode *));
 
-  // check if layout file
-  fgets(line, sizeof(line), layoutfile);
-  if (!strstr(line, "-*- layout"))
-    return NULL;
+	// check if layout file
+	fgets(line, sizeof(line), layoutfile);
+	if (!strstr(line, "-*- layout"))
+		return NULL;
 
-  while (fgets(line, sizeof(line), layoutfile)) {
-    if (line[0] == '\n') continue;
-    struct Keycode *keydef = malloc(sizeof(struct Keycode));
-    int index = 0;
-    // get the character to produce
-    keydef->ch = getCodepoint(line, &index);
-    // skip three ascii chars (space, 0, X)
-    index += 3;
-    // read two hex values
-    unsigned int id, mod;
-    sscanf(line + index, "%x %x", &id, &mod);
-    keydef->id  = (char) id;
-    keydef->mod = (char) mod;
+	while (fgets(line, sizeof(line), layoutfile)) {
+		if (line[0] == '\n')
+			continue;
+		struct Keycode *keydef = malloc(sizeof(struct Keycode));
+		int index = 0;
+		// get the character to produce
+		keydef->ch = getCodepoint(line, &index);
+		// skip three ascii chars (space, 0, X)
+		index += 3;
+		// read two hex values
+		unsigned int id, mod;
+		sscanf(line + index, "%x %x", &id, &mod);
+		keydef->id = (char)id;
+		keydef->mod = (char)mod;
 
-    // add mapping to table
-    layout->map[layout->size++] = keydef;
+		// add mapping to table
+		layout->map[layout->size++] = keydef;
 
-    // resize if necessary
-    if (layout->size == table_cap) {
-      table_cap *= 2;
-      layout->map = realloc(layout->map, table_cap * sizeof(struct Keycode *));
-    }
-  }
+		// resize if necessary
+		if (layout->size == table_cap) {
+			table_cap *= 2;
+			layout->map =
+				realloc(layout->map,
+					table_cap * sizeof(struct Keycode *));
+		}
+	}
 
-  return layout;
-
+	return layout;
 }
 
-void destroy_layout(struct Layout *layout) {
-  if (layout == NULL) return;
+void destroy_layout(struct Layout *layout)
+{
+	if (layout == NULL)
+		return;
 
-  for (int i = 0; i < layout->size; i++) {
-    free(layout->map[i]);
-  }
-  free(layout->map);
-  free(layout);
+	for (int i = 0; i < layout->size; i++) {
+		free(layout->map[i]);
+	}
+	free(layout->map);
+	free(layout);
 }
 
-const struct Keycode *map_codepoint(uint32_t codepoint, struct Layout *layout, bool escape) {
-  if (layout == NULL) return NULL;
+const struct Keycode *map_codepoint(uint32_t codepoint, struct Layout *layout,
+				    bool escape)
+{
+	if (layout == NULL)
+		return NULL;
 
-  if (escape) {
-    // search known escapes
-    for (int i = 0; keys_escape[i].ch != 0x00; i++) {
-      if (codepoint == keys_escape[i].ch)
-        return &keys_escape[i];
-    }
-  }
-  else {
-    // search layout
-    for (int i = 0; i < layout->size; i++) {
-      if (layout->map[i]->ch == codepoint)
-        return layout->map[i];
-    }
-  }
+	if (escape) {
+		// search known escapes
+		for (int i = 0; keys_escape[i].ch != 0x00; i++) {
+			if (codepoint == keys_escape[i].ch)
+				return &keys_escape[i];
+		}
+	} else {
+		// search layout
+		for (int i = 0; i < layout->size; i++) {
+			if (layout->map[i]->ch == codepoint)
+				return layout->map[i];
+		}
+	}
 
-  return NULL;
+	return NULL;
 }
