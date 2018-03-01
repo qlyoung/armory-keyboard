@@ -20,66 +20,41 @@ void set_layout(struct Layout *lo)
 	layout = lo;
 }
 
-int make_hid_report(char *report, int numescape, int argc, ...)
+int make_hid_report_arr(char *report, int numescape, int argc,
+			uint32_t *codepoints)
 {
-	if (layout == NULL)
-		return -1;
-
-	va_list chars;
-	va_start(chars, argc);
-
 	int index = 2;
 
-	// encode at maximum 6 characters
-	for (int ic = 0; ic < argc && ic < 6; ic++) {
-		// assert report index is under 8
+	if (codepoints == NULL)
+		return -1;
+
+	for (int i = 0; i < argc && i < 6; i++) {
 		assert(index < 8);
-
-		uint32_t input = (uint32_t)va_arg(chars, int);
-
+		uint32_t input = codepoints[i];
 		const struct Keycode *match =
-			map_codepoint(input, layout, ic < numescape);
+			map_codepoint(input, layout, i < numescape);
 		if (match == NULL)
 			return -1;
 		if (match->id != 0x00)
 			report[index++] = match->id;
 		report[0] |= match->mod;
 	}
-	va_end(chars);
 
 	return 0;
 }
 
-int make_hid_report_arr(char *report, int numescape, int argc,
-			uint32_t *codepoints)
+int make_hid_report(char *report, int numescape, int argc, ...)
 {
-	// nullcheck
-	if (codepoints == NULL)
+	va_list cplist;
+	uint32_t codepoints[6];
+
+	if (layout == NULL)
 		return -1;
 
-	// i'm so sorry
-	switch (argc) {
-	case 1:
-		return make_hid_report(report, numescape, argc, codepoints[0]);
-	case 2:
-		return make_hid_report(report, numescape, argc, codepoints[0],
-				       codepoints[1]);
-	case 3:
-		return make_hid_report(report, numescape, argc, codepoints[0],
-				       codepoints[1], codepoints[2]);
-	case 4:
-		return make_hid_report(report, numescape, argc, codepoints[0],
-				       codepoints[1], codepoints[2],
-				       codepoints[3]);
-	case 5:
-		return make_hid_report(report, numescape, argc, codepoints[0],
-				       codepoints[1], codepoints[2],
-				       codepoints[3], codepoints[4]);
-	case 6:
-	default:
-		return make_hid_report(report, numescape, argc, codepoints[0],
-				       codepoints[1], codepoints[2],
-				       codepoints[3], codepoints[4],
-				       codepoints[5]);
-	}
+	va_start(cplist, argc);
+	for (int i = 0; i < argc && i < 6; i++)
+		codepoints[i] = (uint32_t)va_arg(cplist, int);
+	va_end(cplist);
+
+	return make_hid_report_arr(report, numescape, argc, codepoints);
 }
